@@ -184,7 +184,6 @@ const GamePage: React.FC = () => {
           </Badge>
         </IconButton>
       </div>
-
     </ContainerWrapper>
   );
 };
