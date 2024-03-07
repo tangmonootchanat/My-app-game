@@ -179,7 +179,7 @@ const GamePage: React.FC = () => {
           color="inherit"
           aria-controls="menuId"
         >
-          <Badge badgeContent={1} color="success">
+          <Badge badgeContent={1}  overlap="circular" color="success">
             <img src={Frame97} alt="" style={{ width: 50, height: 50, fontSize: 16 }} />
           </Badge>
         </IconButton>

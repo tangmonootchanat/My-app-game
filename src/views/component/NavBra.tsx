@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, MenuItem } from '@mui/material';
 import Frame75 from '../component/Images/Frame 75.png';
@@ -15,16 +15,23 @@ const CustomMenuItem = styled(MenuItem)`
 `;
 
 export default function PrimarySearchAppBar() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleIconSelect = (icon: string) => {
+    setSelectedIcon(prevIcon => (prevIcon === icon ? null : icon));
+    setAnchorEl(null); // ปิดเมนูเมื่อเลือกไอคอน
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -33,11 +40,12 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <CustomMenuItem onClick={handleMenuClose}>
-        <img src={Frame100} alt="" style={{ width: 50, height: 50 }} />
-      </CustomMenuItem>
-      <CustomMenuItem onClick={handleMenuClose}>
-        <img src={Frame101} alt="" style={{ width: 50, height: 50 }} />
+      <CustomMenuItem onClick={() => handleIconSelect('openSound')}>
+        {selectedIcon === 'openSound' ? (
+          <img src={Frame100} alt="" style={{ width: 50, height: 50 }} />
+        ) : (
+          <img src={Frame101} alt="" style={{ width: 50, height: 50 }} />
+        )}
       </CustomMenuItem>
     </Menu>
   );
@@ -101,7 +109,7 @@ export default function PrimarySearchAppBar() {
             aria-label="open sound menu"
             aria-controls={menuId}
             aria-haspopup="true"
-            onClick={handleProfileMenuOpen}
+            onClick={handleMenuOpen}
             color="inherit"
             sx={{ mr: 2 }}
             
@@ -110,7 +118,7 @@ export default function PrimarySearchAppBar() {
           </IconButton>
         </Toolbar>
       </AppBar>
-      {renderMenu}
+        {anchorEl && renderMenu}
     </Box>
   );
 }
