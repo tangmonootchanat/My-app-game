@@ -121,10 +121,10 @@ function Navbar() {
           <BackIcon />
         </BackButton>
     )}
-    {window.location.pathname === '/GamePage ' && (
+    {window.location.pathname === '/GamePage' && (
         <>
          <ClockW src={Frame75}/>
-         <Clocks><CountdownTimer /></Clocks>               
+         <Clocks><CountdownTimer/></Clocks>               
          {/* /GamePage */}
          </>
     )}

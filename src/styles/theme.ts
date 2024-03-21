@@ -2,8 +2,7 @@ import Buttonlight from'../image/ButtonY.png';
 import Buttondark from'../image/ButtonP.png';
 import Selectlight from'../image/SelectY.png';
 import Selectdark from'../image/SelectP.png';
-import Clocklight from '../image/ClockY1.png';
-import Clockdark from '../image/ClockP1.png';
+
 export interface Theme {
   background : string ;
   text: string;
@@ -14,6 +13,9 @@ export interface Theme {
   SelectboxsColor: string;
   buttonBack: string;
   buttonClock: string;
+  cardColor: string;
+  imageCard: string;
+  shadowColor: string;
 }
 
 export const lightTheme: Theme = {
@@ -26,6 +28,9 @@ export const lightTheme: Theme = {
   SelectboxsColor:'#FACA15',
   buttonBack:'#D7AD6C',
   buttonClock:'#FAE185',
+  cardColor:'#FAE185',
+  imageCard:'#FACA15',
+  shadowColor:'#66630D',
 };
 
 export const darkTheme: Theme = {
@@ -38,4 +43,7 @@ export const darkTheme: Theme = {
   SelectboxsColor:'#623AA2',
   buttonBack:'#9470A8',
   buttonClock:'#E2B0FF',
+  cardColor:'#E2B0FF',
+  imageCard:'#623AA2',
+  shadowColor:'#623AA2',
 };
