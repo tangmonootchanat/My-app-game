@@ -5,6 +5,7 @@ import GamePage from '../views/pages/PageGames/GamePage';
 import NavBra from "../views/component/NavBra";
 import CountdownTimer from '../views/component/CountdownTimer';
 import SamplePage from "../views/pages/PageGames";
+import TestModal from "../views/pages/PageGames/TestModal";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/GamePage" element={<GamePage />} />
         <Route path="/NavBra" element={<NavBra />} />
         <Route path="/CountdownTimer" element={<CountdownTimer />} />
+        <Route path="/Test" element={<TestModal />} />
       </Routes>
     </Router>
   );
