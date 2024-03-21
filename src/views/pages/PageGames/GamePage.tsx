@@ -1,26 +1,23 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import backgroundImage from '../../component/Images/DARK.png';
 import CardImage from './CardImage';
-import Img1 from '../../component/Images/Img1.png';
-import Img2 from '../../component/Images/Img2.png';
-import Img3 from '../../component/Images/Img3.png';
-import Frame97 from '../../component/Images/Frame 97.png';
-import NavBra from '../../component/NavBra';
+import Img1 from '../PageGames/Images/Img1.png';
+import Img2 from '../PageGames/Images/Img2.png';
+import Img3 from '../PageGames/Images/Img3.png';
+import Frame97 from '../PageGames/Images/Frame 97.png';
 import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
-
+import Navbar from '../../component/navbar/Navbar';
 interface LabelInterface {
   isBold?:boolean;
 };
 
 interface CardProps {
   isFlipped: boolean;
-  // image: string; // เพิ่ม prop image ใน CardProps
+ 
 };
 
 const ContainerWrapper = styled.body`
-  background-image: url(${backgroundImage});
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -155,7 +152,7 @@ const GamePage: React.FC = () => {
 
   return (
     <ContainerWrapper>
-      <NavBra />
+      <Navbar />
       <CardText>
           <Label isBold>STAGE 1</Label>
       </CardText>

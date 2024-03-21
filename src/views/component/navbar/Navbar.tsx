@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
-import { lightTheme, darkTheme } from '../../styles/theme';
-import { Theme } from '../../styles/theme';
-import Frame100 from '../component/Images/Frame 100.png';
-import Frame101 from '../component/Images/Frame 101.png';
-import Frame102 from '../component/Images/Frame 102.png';
-import Frame75 from '../component/Images/Frame 75.png';
-import Frame82 from '../component/Images/Frame 82.png'
+import styled from 'styled-components';
+import Frame100 from '../../component/navbar/images/Frame 100.png';
+import Frame101 from '../../component/navbar/images/Frame 101.png';
+import Frame102 from '../../component/navbar/images/Frame 102.png';
+import Frame75 from '../../component/navbar/images/Frame 75.png';
+import Frame82 from '../../component/navbar/images/Frame 82.png'
 import { FaArrowLeft } from 'react-icons/fa';
 import CountdownTimer from './CountdownTimer';
 
@@ -24,7 +22,6 @@ const NavbarSetting = styled.div`
   color: #fff;
   flex-direction: column;
 `;
-
 const Setting = styled.img`
   width: 40px; 
   height: auto; 
@@ -56,7 +53,6 @@ const BackButton = styled.button`
     color:#000;
   }
 `;
-
 const BackIcon = styled(FaArrowLeft)`
   font-size: 20px; 
 `;
@@ -64,14 +60,12 @@ const ClockW = styled.img`
   width: 40px; 
   height: auto; 
   position: absolute;
- 
 `;
 const C = styled.div`
   display: flex;
   justify-content: space-between;
   gap:20px;
 `;
-
 const Clocks = styled.div`
   width: 147px;
   height: 39px;
@@ -116,37 +110,34 @@ function Navbar() {
 
   const handleClick = () => {
     setIsFrame100(!isFrame100);
-  };
+   };
   const handleBack = () => {
     navigate(-1); 
-  };
+   };
   return (
     <NavbarContainer>
     {window.location.pathname === '/Selectgame' && (
         <BackButton onClick={handleBack}>
           <BackIcon />
         </BackButton>
-      )}
-      {window.location.pathname === '/GamePage ' && (
+    )}
+    {window.location.pathname === '/GamePage ' && (
         <>
          <ClockW src={Frame75}/>
          <Clocks><CountdownTimer /></Clocks>               
          {/* /GamePage */}
          </>
-         
-       
-      )}
+    )}
     <div></div> 
-    <C>
-    <Coins src={Frame82}/>
-    <Coin> 100</Coin>
-    <NavbarSetting>
-      <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
-      {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />
-}
-    </NavbarSetting>
-    </C>
-  </NavbarContainer>
-);
+     <C>
+      <Coins src={Frame82}/>
+      <Coin> 100</Coin>
+      <NavbarSetting>
+        <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
+       {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
+      </NavbarSetting>
+     </C>
+    </NavbarContainer>
+  );
 }
 export default Navbar;

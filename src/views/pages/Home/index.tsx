@@ -4,8 +4,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { lightTheme , darkTheme } from '../../../styles/theme';
 import { Theme } from '../../../styles/theme';
 import Logo from '../../../image/Logo.png';
-import NavBra from '../../component/NavBra';
-import Navbar from '../../component/Navbar';
+import Navbar from '../../component/navbar/Navbar';
 
 const GlobalStyle = createGlobalStyle`
   body {

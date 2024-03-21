@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { lightTheme } from '../../../styles/theme';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import Navbar from '../../component/Navbar';
+import Navbar from '../../component/navbar/Navbar';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -82,7 +83,12 @@ function SelectGame() {
   
   const selectedTheme = 'selectedThemes';
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
-  
+  const navigate = useNavigate();
+
+  const handleButtonClick = (page: string) => {
+    navigate(page);
+  };
+
   useEffect(() => {
     const storedTheme = localStorage.getItem(selectedTheme);
     if (storedTheme) {
@@ -93,7 +99,8 @@ function SelectGame() {
   const Listbutton: any = [
     {
       label: '1',
-      value: 1
+      value: 1,
+      url: '/GamePage'
     },
     {
       label: '2',
@@ -214,7 +221,7 @@ function SelectGame() {
   ];
   const unlockedLevel = 1;
   const boxes = Listbutton.map((item: any) => (
-    <LockedBox key={item.value}>
+    <LockedBox key={item.value}  onClick={() => handleButtonClick(item.url)}>
       {item.value <= unlockedLevel ? (
         <NumberText>{item.label}</NumberText>
       ) : (
@@ -235,7 +242,7 @@ function SelectGame() {
       {boxes}
       </HomePageContainer>
     </Background>
-    
+
   </ThemeProvider>
   )
 }
