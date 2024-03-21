@@ -5,13 +5,14 @@ import GamePage from '../views/pages/PageGames/GamePage';
 import NavBra from "../views/component/NavBra";
 import CountdownTimer from '../views/component/CountdownTimer';
 import SamplePage from "../views/pages/PageGames";
-
+import SelectGame from "../views/pages/Select";
 function App() {
   return (
     <Router>
       <Routes>
        <Route path="/" element={<SamplePage />} /> 
        <Route path="/Homegame" element={<Homegame />} />
+       <Route path="/Selectgame" element={<SelectGame/>} />
         <Route path="/GamePage" element={<GamePage />} />
         <Route path="/NavBra" element={<NavBra />} />
         <Route path="/CountdownTimer" element={<CountdownTimer />} />
