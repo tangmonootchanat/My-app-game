@@ -62,29 +62,34 @@ export default function PrimarySearchAppBar() {
         boxShadow: 'none', // Remove the box-shadow
       }}>
         <Toolbar>
-          <Typography noWrap sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', position: 'relative' }}>
-            <img src={Frame75} alt="" style={{ width: 50, height: 50, position: 'relative', zIndex: 1, marginRight: 'Auto' }} />
-            <Box
-              sx={{
-                width: '157px',
-                height: '39px',
-                backgroundColor: '#E2B0FF',
-                borderRadius: '3px',
-                position: 'absolute',
-                top: '8px',
-                left: '25px',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                fontStyle: 'oblique',
-                color: 'red',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <CountdownTimer />
-            </Box>
-          </Typography>
+        <Typography noWrap sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', position: 'relative' }}>
+  {false && (
+    <>
+      <img src={Frame75} alt="" style={{ width: 50, height: 50, position: 'relative', zIndex: 1, marginRight: 'Auto' }} />
+      <Box
+        sx={{
+          width: '157px',
+          height: '39px',
+          backgroundColor: '#E2B0FF',
+          borderRadius: '3px',
+          position: 'absolute',
+          top: '8px',
+          left: '25px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          fontStyle: 'oblique',
+          color: 'red',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <CountdownTimer />
+      </Box>
+    </>
+  )}
+</Typography>
+
           <Typography noWrap sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', position: 'relative' }}>
             <img src={Frame82} alt="" style={{ width: 50, height: 50, position: 'relative', zIndex: 1,  marginLeft: 'auto', marginRight: '190px' }} />
             <Box
