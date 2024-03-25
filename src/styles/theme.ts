@@ -16,6 +16,9 @@ export interface Theme {
   cardColor: string;
   imageCard: string;
   shadowColor: string;
+  overGamein: string;
+  overGame: string;
+  
 }
 
 export const lightTheme: Theme = {
@@ -31,6 +34,10 @@ export const lightTheme: Theme = {
   cardColor:'#FAE185',
   imageCard:'#FACA15',
   shadowColor:'#66630D',
+  overGamein:'#FAE185',
+  overGame:'#D4AB0E',
+  
+  
 };
 
 export const darkTheme: Theme = {
@@ -46,4 +53,7 @@ export const darkTheme: Theme = {
   cardColor:'#E2B0FF',
   imageCard:'#623AA2',
   shadowColor:'#623AA2',
+  overGamein:'#E2B0FF',
+  overGame:'#623AA2',
+ 
 };

@@ -156,7 +156,7 @@ const GamePage: React.FC = () => {
 };
 useEffect(() => {
   const currentTime = new Date();
-  const millisecondsUntilCountdown = (1000 - currentTime.getMilliseconds() + 6000) % 1000; // คำนวณเวลาที่เหลือจนถึง 6 วินาที
+  const millisecondsUntilCountdown = (1000 - currentTime.getMilliseconds() + 8000) % 1000; // คำนวณเวลาที่เหลือจนถึง 6 วินาที
   setTimeout(() => {
     closeAllCards(); // ปิดการ์ดทั้งหมด
     setIsGameStarted(true); // เริ่มเกม
