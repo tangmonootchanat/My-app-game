@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState , useEffect} from 'react';
+import { useNavigate ,useLocation  } from 'react-router-dom';
 import styled from 'styled-components';
 import Frame100 from '../../component/navbar/images/Frame 100.png';
 import Frame101 from '../../component/navbar/images/Frame 101.png';
@@ -49,7 +49,7 @@ const BackButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #fff; 
+    background-color:${(props) => props.theme.boxColor}; 
     color:#000;
   }
 `;
@@ -104,10 +104,26 @@ const Coins = styled.img`
 `;
 
 function Navbar() {
-  const [showDropdown, setShowDropdown] = useState(false); // Initial state is false, dropdown is hidden
+  const [showDropdown, setShowDropdown] = useState(false); 
   const navigate = useNavigate();
   const [isFrame100, setIsFrame100] = useState(true);
-
+  const [empCoin, setEmpCoin] = useState(null);
+  const location = useLocation();
+  const isSelectGamePage = location.pathname === '/Selectgame';
+  const isGamePage = location.pathname.startsWith('/GamePage/');
+   
+  useEffect(() => {
+    const userId = '1';
+    fetch(`http://localhost:8000/User/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        setEmpCoin(data.Coin);
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+      });
+  }, []);
   const handleClick = () => {
     setIsFrame100(!isFrame100);
    };
@@ -116,23 +132,23 @@ function Navbar() {
    };
   return (
     <NavbarContainer>
-    {window.location.pathname === '/Selectgame' && (
+    {isSelectGamePage && (
         <BackButton onClick={handleBack}>
           <BackIcon />
         </BackButton>
-    )}
-    {window.location.pathname === '/GamePage' && (
+      )}
+      {isGamePage && (
         <>
-         <ClockW src={Frame75}/>
-         <Clocks><CountdownTimer/></Clocks>               
-         {/* /GamePage */}
-         </>
-    )}
+          <ClockW src={Frame75}/>
+          <Clocks><CountdownTimer/></Clocks>
+        </>
+      )}
     <div></div> 
      <C>
       <Coins src={Frame82}/>
-      <Coin> 100</Coin>
-      <NavbarSetting>
+      <Coin>{empCoin}</Coin>
+
+    <NavbarSetting>
         <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
        {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
       </NavbarSetting>

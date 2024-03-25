@@ -13,7 +13,7 @@ function App() {
        <Route path="/" element={<SamplePage />} /> 
        <Route path="/Homegame" element={<Homegame />} />
        <Route path="/Selectgame" element={<SelectGame/>} />
-       <Route path="/GamePage" element={<GamePage />} />
+       <Route path="/GamePage/1" element={<GamePage />} />
        <Route path="/CountdownTimer" element={<CountdownTimer />} />
       </Routes>
     </Router>

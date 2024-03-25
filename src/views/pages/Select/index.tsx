@@ -4,6 +4,7 @@ import { lightTheme } from '../../../styles/theme';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Navbar from '../../component/navbar/Navbar';
 
 const GlobalStyle = createGlobalStyle`
@@ -78,29 +79,194 @@ const LockIcon = styled(FontAwesomeIcon)`
   transform: translate(-50%, -50%) rotate(30deg); 
   color: #FF0707; 
 `;
+const Popup = styled.div`
+  position: fixed;
+  width:250px;
+  height:auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: ${(props) => props.theme.cardColor};
+  border: 2px solid #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+`;
+const PopupS = styled.div`
+  position: fixed;
+  width:250px;
+  height:auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: ${(props) => props.theme.boxColor };
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+`;
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+`;
+
+const PopupText = styled.p`
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  border-radius: 10px;
+  height:35px;
+  color: #ffffff;
+  font-weight:bold;
+  border: 2px solid #fff;
+  background-color: ${(props) => props.theme.SelectboxsColor};
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const Button = styled.button`
+  margin: 0 10px;
+  padding: 8px 16px;
+  width: 120px;
+  background-color: ${(props) => (props.disabled ? '#ccc' : props.theme.SelectboxsColor)};
+  border: 2px solid #fff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  &:hover {
+    background-color: ${(props) => (props.disabled ? '#ccc' : props.theme.boxsColor)};
+  }
+`;
+
+const SelectText = styled.p`
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  color: #A6813A;
+  font-weight:bold;
+  
+`;
+const WrapperCoin = styled.button`
+ display:flex;
+ align-items:center;
+ background:none;
+ border:none;
+
+`;
+interface CoinProps {
+  selected: boolean;
+}
+const Coin = styled.button<CoinProps>`
+  margin: 0 18px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background-color: ${(props) => (props.selected ? props.theme.boxsColor : props.theme.SelectboxsColor)};
+  border: 2px solid #fff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => props.theme.boxsColor};
+  }
+`;
 
 function SelectGame() {
   
   const selectedTheme = 'selectedThemes';
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
+  const [selectedLevel, setSelectedLevel] = useState(1);
   const navigate = useNavigate();
-
-  const handleButtonClick = (page: string) => {
-    navigate(page);
+  const [showPopup, setShowPopup] = useState(false);
+  const [empCoin, setEmpCoin] = useState<number[]>([]);
+  const [empLevel, setEmpLevel] = useState(null);
+  const [empUsername, setEmpUsername] = useState(null);
+  const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
+  const [totalCoin, setTotalCoin] = useState<number>(0);
+  const [deductedCoin, setDeductedCoin] = useState<number>(0);
+ console.log(deductedCoin)
+  
+  const handleButtonClick = (url: string) => {
+    setSelectedLevel(parseInt(url, 10));
+    setShowPopup(true);
+  };
+  
+  const handleConfirm = () => {
+    setShowPopup(false);
+    if (selectedCoin !== null && selectedCoin !== undefined) {
+      const newCoinValue = totalCoin - selectedCoin;
+      setTotalCoin(newCoinValue);
+      setDeductedCoin(selectedCoin);
+      
+      const userId = '1';
+      fetch(`http://localhost:8000/User/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Coin: newCoinValue, Level: selectedLevel, Username: empUsername, DeductedCoin: selectedCoin }), 
+})
+        .then(response => response.json())
+        .then(data => {
+          console.log('ค่าเหรียญถูกอัพเดตเป็น:', newCoinValue);
+        })
+        .catch(error => {
+          console.error('เกิดข้อผิดพลาดในการอัพเดตค่าเหรียญ:', error);
+        });
+    }navigate(`/GamePage/${selectedLevel}`);
+  };
+  
+  const handleCancel = () => {
+    setShowPopup(false);
   };
 
-  useEffect(() => {
+
+useEffect(() => {
     const storedTheme = localStorage.getItem(selectedTheme);
     if (storedTheme) {
       setCurrentTheme(JSON.parse(storedTheme));
     }
   }, []);
- 
+  useEffect(() => {
+    const userId = '1';
+    fetch(`http://localhost:8000/User/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        setEmpCoin(data.Coin);
+        setEmpUsername(data.Username);
+        setDeductedCoin(data.DeductedCoin)
+        setEmpLevel(data.Level);
+        setTotalCoin(data.Coin); 
+      })
+      .catch(error => {
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+      });
+  }, []);
+  
+  const handleCoinSelect = (coinValue: number) => {
+    setSelectedCoin(coinValue);
+};
+
+useEffect(() => {
+  if (selectedCoin !== null && Array.isArray(empCoin)) {
+      const updatedCoins = empCoin.filter((coin: number) => coin !== selectedCoin);
+      setEmpCoin(updatedCoins);
+  }
+}, [selectedCoin, empCoin]);
+
+console.log("empCoin after filter:", empCoin);
+console.log("selectedCoin :", selectedCoin );
   const Listbutton: any = [
     {
       label: '1',
       value: 1,
-      url: '/GamePage'
+     
     },
     {
       label: '2',
@@ -219,9 +385,10 @@ function SelectGame() {
       value: 30
     }
   ];
-  const unlockedLevel = 1;
+  const unlockedLevel = parseInt(empLevel || "0", 10);
+
   const boxes = Listbutton.map((item: any) => (
-    <LockedBox key={item.value}  onClick={() => handleButtonClick(item.url)}>
+    <LockedBox key={item.value} onClick={item.value <= unlockedLevel ? () => handleButtonClick(item.label) : undefined}>
       {item.value <= unlockedLevel ? (
         <NumberText>{item.label}</NumberText>
       ) : (
@@ -240,6 +407,25 @@ function SelectGame() {
     <Background>
       < HomePageContainer >
       {boxes}
+      {showPopup && (
+        <Popup>
+         <CloseButton onClick={handleCancel}><FontAwesomeIcon icon={faXmark} /></CloseButton>
+    <PopupText>Level {selectedLevel}</PopupText>
+    <SelectText>Select Coin</SelectText>
+    <WrapperCoin>
+  {[1, 5, 10].map((coinValue) => (
+    <Coin key={coinValue} selected={selectedCoin === coinValue} onClick={() => handleCoinSelect(coinValue)}>{coinValue}</Coin>
+  ))}
+</WrapperCoin>
+
+           
+          <ButtonContainer>
+        <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={() => {selectedCoin !== null && selectedCoin !== undefined ? handleConfirm() : setShowPopup(true);}}>Play</Button>
+
+
+          </ButtonContainer>
+        </Popup>
+      )}
       </HomePageContainer>
     </Background>
 
