@@ -61,7 +61,7 @@ const Coinn = styled.div`
   font-size: 18px;
   font-weight: bold;
   font-style: oblique;
-  color: red;
+  color: #065a0f;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -122,8 +122,20 @@ const RefreshWrapper = styled.span`
 function ModalWin({ onClose }: PopupProps) {
   const selectedTheme = 'selectedThemes';
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
+  const [deductedCoin, setDeductedCoin] = useState<number>(0);
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const userId = '1';
+    fetch(`http://localhost:8000/User/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        setDeductedCoin(data.DeductedCoin * 2); // Multiply the deducted coin by 2
+      })
+      .catch(error => {
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+      });
+  }, []);
+  
   useEffect(() => {
     const storedTheme = localStorage.getItem(selectedTheme);
     if (storedTheme) {
@@ -131,9 +143,6 @@ function ModalWin({ onClose }: PopupProps) {
     }
   }, []);
 
-  const handleHomeScreen = () => {
-    navigate('/Homegame');
-  };
 
   const handleBackStage = () => {
     navigate('/Selectgame');
@@ -148,17 +157,12 @@ function ModalWin({ onClose }: PopupProps) {
             <ImgPopupCard src={BearWin} />
             <C>
               <Coins src={Coin} />
-              <Coinn>100</Coinn>
+              <Coinn>{deductedCoin}</Coinn>
             </C>
             <ButtonWrapper>
-              <IconButton onClick={handleHomeScreen}>
-                <RefreshWrapper>
-                  <FontAwesomeIcon icon={faHome} />
-                </RefreshWrapper>
-              </IconButton>
               <IconButton onClick={handleBackStage}>
                 <RefreshWrapper>
-                  <FontAwesomeIcon icon={faBackward} />
+                  <FontAwesomeIcon icon={faHome} />
                 </RefreshWrapper>
               </IconButton>
             </ButtonWrapper>

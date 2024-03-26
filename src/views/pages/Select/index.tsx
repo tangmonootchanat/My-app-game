@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { lightTheme } from '../../../styles/theme';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUnlockAlt } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Navbar from '../../component/navbar/Navbar';
 
@@ -79,6 +79,13 @@ const LockIcon = styled(FontAwesomeIcon)`
   transform: translate(-50%, -50%) rotate(30deg); 
   color: #FF0707; 
 `;
+const UnLockIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(30deg); 
+  color: #3CD500; 
+`;
 const Popup = styled.div`
   position: fixed;
   width:250px;
@@ -88,18 +95,6 @@ const Popup = styled.div`
   transform: translate(-50%, -50%);
   background-color: ${(props) => props.theme.cardColor};
   border: 2px solid #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-`;
-const PopupS = styled.div`
-  position: fixed;
-  width:250px;
-  height:auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: ${(props) => props.theme.boxColor };
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -390,7 +385,10 @@ console.log("selectedCoin :", selectedCoin );
   const boxes = Listbutton.map((item: any) => (
     <LockedBox key={item.value} onClick={item.value <= unlockedLevel ? () => handleButtonClick(item.label) : undefined}>
       {item.value <= unlockedLevel ? (
-        <NumberText>{item.label}</NumberText>
+        <>
+        <UnLockIcon icon={faUnlockAlt} />
+      <NumberText>{item.label}</NumberText>
+        </>
       ) : (
         <>
           <LockIcon icon={faLock} />

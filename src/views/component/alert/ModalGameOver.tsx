@@ -124,7 +124,21 @@ const RefreshWrapper = styled.span`
 function ModalGameOver({ onClose }: PopupProps) {
   const selectedTheme = 'selectedThemes';
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
+  const [deductedCoin, setDeductedCoin] = useState<number>(0);
   const navigate = useNavigate();
+  useEffect(() => {
+    const userId = '1';
+    fetch(`http://localhost:8000/User/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        
+        setDeductedCoin(data.DeductedCoin)
+       ; 
+      })
+      .catch(error => {
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+      });
+  }, []);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem(selectedTheme);
@@ -145,7 +159,7 @@ function ModalGameOver({ onClose }: PopupProps) {
       <ImgPopupCard src={BearLose} />
       <C>
       <Coins src={Coin}/>
-      <Coinn>100</Coinn>
+      <Coinn>{deductedCoin}</Coinn>
       </C>
       < ButtonWrapper>
             <IconButton onClick={handleRefreshScreen}>

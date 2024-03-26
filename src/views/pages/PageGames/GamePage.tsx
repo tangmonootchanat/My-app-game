@@ -1,7 +1,6 @@
   import React, { useState, useEffect } from 'react';
   import styled, { css ,ThemeProvider, createGlobalStyle } from 'styled-components';
   import { lightTheme } from '../../../styles/theme';
-  import CardImage from './CardImage';
   import Img1 from '../PageGames/Images/Img1.png';
   import Img2 from '../PageGames/Images/Img2.png';
   import Img3 from '../PageGames/Images/Img3.png';
@@ -310,7 +309,7 @@
   }, []);
 
   const returnDeductedCoins = () => {
-    const newCoinValue = empCoin + deductedCoin;
+    const newCoinValue = empCoin + (deductedCoin * 2);
     setEmpCoin(newCoinValue);
     setDeductedCoin(0); // Reset deducted coin to 0
     const newLevel = empLevel + 1; // Increase level by 1

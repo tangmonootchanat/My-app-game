@@ -128,7 +128,7 @@ function Navbar() {
     setIsFrame100(!isFrame100);
    };
   const handleBack = () => {
-    navigate(-1); 
+    navigate('/Homegame'); 
    };
   return (
     <NavbarContainer>
