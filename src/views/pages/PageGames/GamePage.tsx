@@ -285,8 +285,69 @@
   const isCardMatched = (id: number) => {
       return matchedCards.includes(id);
   };
+  const [empCoin, setEmpCoin] = useState<number>(0);
+  const [empLevel, setEmpLevel] = useState<number>(0);
+  const [empUsername, setEmpUsername] = useState(null);
+  const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
+  const [totalCoin, setTotalCoin] = useState<number>(0);
+  const [deductedCoin, setDeductedCoin] = useState<number>(0);
 
+ 
+  useEffect(() => {
+    const userId = '1';
+    fetch(`http://localhost:8000/User/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        setEmpCoin(data.Coin);
+        setEmpUsername(data.Username);
+        setDeductedCoin(data.DeductedCoin)
+        setEmpLevel(data.Level);
+        setTotalCoin(data.Coin); 
+      })
+      .catch(error => {
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+      });
+  }, []);
 
+  const returnDeductedCoins = () => {
+    const newCoinValue = empCoin + deductedCoin;
+    setEmpCoin(newCoinValue);
+    setDeductedCoin(0); // Reset deducted coin to 0
+    const newLevel = empLevel + 1; // Increase level by 1
+    setEmpLevel(newLevel); // Update local state of level
+  
+    const userId = '1';
+    fetch(`http://localhost:8000/User/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Coin: newCoinValue, Level: newLevel, Username: empUsername, DeductedCoin: selectedCoin }), 
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('ค่าเหรียญถูกอัพเดตเป็น:', newCoinValue);
+      console.log('เลเวลถูกอัพเดตเป็น:', newLevel); // Log the updated level
+    })
+    .catch(error => {
+      console.error('เกิดข้อผิดพลาดในการอัพเดตค่าเหรียญ:', error);
+    });
+  };
+  
+  useEffect(() => {
+    if (isGameWin) {
+      returnDeductedCoins();
+    }
+  }, [isGameWin]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      setDeductedCoin(0);
+    }
+  }, [isGameOver]);
+  
+
+  
     return (
       <ThemeProvider theme={currentTheme}>
         <Navbar />
