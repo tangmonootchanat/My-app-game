@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { lightTheme , darkTheme } from '../../../styles/theme';
 import { Theme } from '../../../styles/theme';
 import Logo from '../../../image/Logo.png';
-import NavBra from '../../component/NavBra';
+import Navbar from '../../component/navbar/Navbar';
+
 const GlobalStyle = createGlobalStyle`
   body {
     background: ${(props) => props.theme.background};
@@ -14,7 +16,6 @@ const GlobalStyle = createGlobalStyle`
 const Wrappercon = styled.div`
   display:flex;
   flex-direction: column;
-  justify-content:center;
   align-items:center;
   padding: 20px;
 
@@ -64,8 +65,6 @@ const StartButtons = styled.button`
   cursor: pointer;
 `;
 
-
-
 const StartButtonlight = styled.button`
   width: 90px;
   height: 80px;
@@ -83,7 +82,7 @@ const StartButtonlight = styled.button`
     font-size: 12px;
   }
   &:hover {
-    border: 2px solid #fff;
+    border: 3px solid #fff;
     transform: scale(1.1); 
   }
 
@@ -109,7 +108,7 @@ const StartButtondark = styled.button`
     font-size: 12px;
   }
   &:hover {
-    border: 2px solid #fff;
+    border: 3px solid #fff;
     transform: scale(1.1); 
   }
 
@@ -118,22 +117,9 @@ const StartButtondark = styled.button`
   }
 `;
 
-const Text =  styled.div`
-  display: flex;
-  justify-content:end;
-  margin-right:160px;
-  margin-bottom:30px;
-  font-size:38px;
-  font-family: "Luckiest Guy", cursive;
-  -webkit-text-stroke: 2px #623AA2; 
-  font-style: normal;
-  
-  @media (max-width: 768px) {
-    justify-content: center;
-    margin-right: 0;
-  }
-`;
 function Homegame() {
+  const navigate = useNavigate();
+
   const selectedTheme = 'selectedThemes';
 
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
@@ -148,24 +134,24 @@ function Homegame() {
     if (storedTheme) {
       setCurrentTheme(JSON.parse(storedTheme));
     }
-  }, []);
-
+    }, []);
+  const handleClick = () => {
+    navigate('/Selectgame');
+    };
   return (
-    <ThemeProvider theme={currentTheme}>
-      <NavBra />
+  <ThemeProvider theme={currentTheme}>
+    <Navbar />
     <GlobalStyle />
-    
-    <Wrappercon>
-      <LogoContainer>
-        <LogoImage src={Logo} alt="Logo" />
-      </LogoContainer>
-      <StartButtons />
-    </Wrappercon>
-    <StartButtonsContainer>
-      <StartButtonlight onClick={() => toggleTheme(lightTheme)}/>
-      <StartButtondark onClick={() => toggleTheme(darkTheme)}/>
-  
-    </StartButtonsContainer>
+      <Wrappercon>
+            <LogoContainer>
+                 <LogoImage src={Logo} alt="Logo" />
+            </LogoContainer>
+            <StartButtons onClick={handleClick} />
+      </Wrappercon>
+      <StartButtonsContainer>
+          <StartButtonlight onClick={() => toggleTheme(lightTheme)}/>
+          <StartButtondark onClick={() => toggleTheme(darkTheme)}/>
+      </StartButtonsContainer>
   </ThemeProvider>
   );
 }

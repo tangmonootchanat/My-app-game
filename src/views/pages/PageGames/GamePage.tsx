@@ -1,184 +1,373 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import styled, { css } from "styled-components";
-import backgroundImage from "../../component/Images/DARK.png";
-import CardImage from "./CardImage";
-import Img1 from "../../component/Images/Img1.png";
-import Img2 from "../../component/Images/Img2.png";
-import Img3 from "../../component/Images/Img3.png";
-import Frame97 from "../../component/Images/Frame 97.png";
-import NavBra from "../../component/NavBra";
-import Badge from "@mui/material/Badge";
-import IconButton from "@mui/material/IconButton";
-import ModalWin from "../../component/ModalWin";
-import ModalGameOver from "../../component/ModalGameOver";
-import CountdownTimer from "../../component/CountdownTimer";
-import useCountdowntime from "../../component/UseCountdown";
+  import React, { useState, useEffect } from 'react';
+  import styled, { css ,ThemeProvider, createGlobalStyle } from 'styled-components';
+  import { lightTheme } from '../../../styles/theme';
+  import CardImage from './CardImage';
+  import Img1 from '../PageGames/Images/Img1.png';
+  import Img2 from '../PageGames/Images/Img2.png';
+  import Img3 from '../PageGames/Images/Img3.png';
+  import Frame97 from '../PageGames/Images/Frame 97.png';
+  import Navbar from '../../component/navbar/Navbar';
+  import { IconButton, Badge  } from '@mui/material';
+  import { useNavigate } from 'react-router-dom';
+  import ModalWin from '../../component/alert/ModalWin';
+  import ModalGameOver from '../../component/alert/ModalGameOver';
+  import useCountdown from '../../component/UseCountdown';
 
-interface LabelInterface {
-  isBold?: boolean;
-}
 
-interface CardProps {
-  isFlipped: boolean;
-  // image: string; // เพิ่ม prop image ใน CardProps
-}
 
-const ContainerWrapper = styled.body`
-  background-image: url(${backgroundImage});
-  background-size: cover;
-  background-position: center;
-  min-height: 100vh;
-`;
+  interface LabelInterface {
+    isBold?:boolean;
+  };
 
-const CardContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 83px;
-  padding: 10px;
-  margin: 5px;
-  perspective: 100px;
-  width: calc(100% - 60px);
-  place-items: center;
-`;
 
-const Card = styled.div<CardProps>`
-  width: 29vw;
-  height: 30vw;
-  max-width: 200px;
-  max-height: 200px;
-  background-color: ${(props) => (props.isFlipped ? "#E2B0FF" : "#623AA2")};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  border: 5px solid #fff;
+  interface CardProps {
+    id: number;
+    image: string;
+    isFlipped: boolean;
+    isMatched: boolean;
+  };
 
-  &:hover {
-    background-color: ${(props) => (props.isFlipped ? "#623AA2" : "#E2B0FF")};
-  }
 
-  img {
-    max-width: 100%;
-    max-height: 100%;
-  }
-`;
-
-const CardText = styled.div`
-  display: grid;
-  margin: 30px;
-`;
-
-const Label = styled.label<LabelInterface>`
-  color: #ffffff;
-  stroke-opacity: 623AA2;
-  display: block;
-  text-align: start;
-  font-size: 10px;
-  ${(props) =>
-    props.isBold &&
-    css`
+  const Label = styled.label<LabelInterface>`
+    color :#FFFFFF ;
+    stroke-opacity: 623AA2 ;
+    display: block;
+    text-align: start;  
+    font-size: 10px;
+    ${props => props.isBold && css`
       font-family: "Luckiest Guy", cursive;
-      -webkit-text-stroke: 5px #623aa2;
+      -webkit-text-stroke: 5px${(props) => props.theme.shadowColor};;
       font-style: normal;
       font-size: 60px;
-
       text-align: center;
       margin-top: 25px;
       margin-bottom: -10px;
+
     `}
-`;
+  `;
 
-const cardImages = [
-  { id: 1, image: Img1 },
-  { id: 2, image: Img2 },
-  { id: 3, image: Img3 },
-  { id: 4, image: Img1 },
-  { id: 5, image: Img2 },
-  { id: 6, image: Img3 },
-];
 
-const GamePage: React.FC = () => {
-  const [openedCards, setOpenedCards] = useState<number[]>([]);
-  const [matchedCards, setMatchedCards] = useState<number[]>([]);
-  const timeLeft = useCountdowntime(3 * 60);
+  const GlobalStyle = createGlobalStyle`
+  body {
+    background: ${(props) => props.theme.background};
+    color: ${(props) => props.theme.text};
+    margin: 0;
+  }
+  `;
 
-  const closeAllOpenedCards = () => setOpenedCards([]);
-  const handleCardClick = (id: number) => {
-    if (matchedCards.includes(id) || openedCards.length === 2) return;
-    if (!openedCards.includes(id)) {
-      setOpenedCards([...openedCards, id]);
+
+  const ContainerWrapper = styled.body`
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+  `;
+
+
+  const CardContainer = styled.div`
+    display: grid;
+    grid-template-rows: repeat(2, auto); /* Two rows */
+    gap: 50px;
+    padding: 20px;
+    margin: 5px;
+    perspective: 100px;
+    width: calc(100% - 60px);
+    place-items: center;
+  `;
+
+
+  const CardRow = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  `;
+
+
+  const Card = styled.div<CardProps>`
+    width: 29vw;
+    height: 30vw;
+    max-width: 200px;
+    max-height: 200px;
+    background-color: ${(props) => (props.isFlipped ? props.theme.cardColor : props.theme.imageCard)};
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: 5px solid #fff;
+
+    &:hover {
+      background-color:${(props) => (props.isFlipped ? props.theme.imageCard : props.theme.cardColor)};
     }
-  
-    if (openedCards.length === 1) {
-      const [firstCardId] = openedCards;
-      const firstCardImage = cardImages.find((card) => card.id === firstCardId)?.image;
-      const secondCardImage = cardImages.find((card) => card.id === id)?.image;
-  
-      if (firstCardImage && firstCardImage === secondCardImage) {
-        setMatchedCards([...matchedCards, firstCardId, id]);
-        setOpenedCards([]);
-      } else {
-        setTimeout(() => {
-          setOpenedCards(openedCards.filter((cardId) => cardId !== firstCardId && cardId !== id));
-        }, 1000);
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  `;
+
+  const CardText = styled.div`
+    display: grid;
+    margin: 30px;
+  `;
+
+
+  const GamePage: React.FC = () => {
+    const selectedTheme = 'selectedThemes';
+    const [currentTheme, setCurrentTheme] = useState(lightTheme);
+    const [cardImages, setCardImages] = useState<CardProps[]>([
+      { id: 1, image: Img1, isFlipped: false, isMatched: false },
+      { id: 2, image: Img2, isFlipped: false, isMatched: false },
+      { id: 3, image: Img3, isFlipped: false, isMatched: false },
+    ]);
+
+    const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
+    const [isOpeningAllCards, setIsOpeningAllCards] = useState(false);
+    const [openedCards, setOpenedCards] = useState<number[]>([]);
+    const [matchedCards, setMatchedCards] = useState<number[]>([]);
+    const [isGameWin, setIsGameWin] = useState(false);
+    const [isGameOver, setIsGameOver] = useState<boolean>(false);
+    const [randomImage, setRandomImage] = useState(0);
+    const timeLeft = useCountdown(1 * 60, isGameWin);
+    const navigate = useNavigate();
+    
+
+    useEffect(() => {
+      const storedTheme = localStorage.getItem(selectedTheme);
+      if (storedTheme) {
+        setCurrentTheme(JSON.parse(storedTheme));
       }
-    }
+    }, []);
+
+
+    // เรียกใช้ `openAllCards` เมื่อ `isOpeningAllCards` เป็น `true`
+    useEffect(() => {
+      if (isOpeningAllCards) {
+        openAllCards();
+        setTimeout(() => {
+          closeAllCards();
+          setIsOpeningAllCards(false);
+        }, 3000); // เปิดการ์ดเป็นเวลา 3 วินาที
+      }
+    }, [isOpeningAllCards]);
+
+
+  const startGame = () => {
+    setIsGameStarted(true);
+    setMatchedCards([]);
+    setIsOpeningAllCards(true); // Start opening all cards
   };
-  const isCardOpened = (id: number) => openedCards.includes(id);
-  const isCardMatched = (id: number) => matchedCards.includes(id);
-  const hasWon = matchedCards.length === cardImages.length;
-  const isGameOver = timeLeft === 0;
+  useEffect(() => {
+    const currentTime = new Date();
+    const millisecondsUntilCountdown = (1000 - currentTime.getMilliseconds() + 8000) % 1000; // คำนวณเวลาที่เหลือจนถึง 6 วินาที
+    setTimeout(() => {
+      closeAllCards(); // ปิดการ์ดทั้งหมด
+      setIsGameStarted(true); // เริ่มเกม
+    }, millisecondsUntilCountdown); // เปิดการ์ดเป็นเวลา 6 วินาที
+  }, []);
 
-  return (
-    <ContainerWrapper>
-      <NavBra />
-      <CardText>
-        <Label isBold>STAGE 1</Label>
-      </CardText>
-      <CardContainer>
-        {cardImages.map((card) => (
-          <Card
-            key={card.id}
-            onClick={() => handleCardClick(card.id)}
-            isFlipped={isCardOpened(card.id) || isCardMatched(card.id)}
-          >
-            {isCardOpened(card.id) || isCardMatched(card.id) ? (
-              <img src={card.image} alt={`Card ${card.id}`} />
-            ) : null}
-          </Card>
-        ))}
-      </CardContainer>
-      <div style={{ display: "grid", placeItems: "end", marginRight: "20px" }}>
-        <IconButton
-          size="large"
-          aria-label="show 1 new help"
-          color="inherit"
-          aria-controls="menuId"
-        >
-          <Badge badgeContent={1} overlap="circular" color="success">
-            <img
-              src={Frame97}
-              alt=""
-              style={{ width: 50, height: 50, fontSize: 16 }}
-            />
-          </Badge>
-        </IconButton>
-      </div>
-      {hasWon && <ModalWin onClose={closeAllOpenedCards} />}
-      {isGameOver && !hasWon && (
-        <ModalGameOver
-          onClose={function (): void {
-            throw new Error("Function not implemented.");
-          }}
-        />
-      )}
-    </ContainerWrapper>
-  );
-};
 
-export default GamePage;
+
+
+    useEffect(() => {
+      if (!isGameStarted && !isOpeningAllCards && !isGameOver) {
+        setIsOpeningAllCards(true); // Start opening all cards
+        setTimeout(() => {
+          setIsOpeningAllCards(false); // Stop opening all cards
+        }, 60000); // เปิดการ์ดเป็นเวลา 1 นาที (60 วินาที)
+      }
+    }, [isGameStarted, isOpeningAllCards, isGameOver]);
+    
+    const getRandomImage = () => {
+      const availableImages = [Img1, Img2, Img3, Img1, Img2, Img3];
+      const usedIndexes = cardImages.map((card) => availableImages.indexOf(card.image));
+    
+      const pairs = [];
+      for (let i = 0; i < availableImages.length; i++) {
+        pairs.push([i, i]);
+      }
+    
+      const shuffleArray = (array: any[]) => {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+      };
+    
+      const shuffledPairs = shuffleArray(pairs);
+    
+      const newCardImages: CardProps[] = shuffledPairs.map(([index1, index2]) => {
+        const imageIndex = usedIndexes.includes(index1) ? index2 : index1; // Get the unused index
+        const newImage = availableImages[imageIndex];
+        return {
+          id: imageIndex, 
+          image: newImage, 
+          isFlipped: false,
+          isMatched: false,
+        };
+      });
+      
+    
+      setCardImages(newCardImages);
+    };
+    
+    
+    useEffect(() => {
+      getRandomImage();
+    }, []);
+    
+
+    const openAllCards = () => {
+      setOpenedCards(cardImages.map((card) => card.id));
+    };
+
+
+    const closeAllCards = () => {
+      setOpenedCards([]);
+    };
+
+
+    const handleCardClick = (id: number) => {
+      if (matchedCards.includes(id) || openedCards.length === 6) {
+        return;
+      }
+      
+      if (!openedCards.includes(id)) {
+        setOpenedCards([...openedCards, id]);
+      }
+    
+      if (openedCards.length % 2 === 1) {
+        const [firstCardId] = openedCards.slice(-1);
+        const firstCardImage = cardImages.find(card => card.id === firstCardId)?.image;
+        const currentCardImage = cardImages.find(card => card.id === id)?.image;
+    
+        if (firstCardImage === currentCardImage) {
+          setMatchedCards([...matchedCards, firstCardId, id]);
+          if (matchedCards.length + 2 === cardImages.length) {
+            setIsGameWin(true);
+          }
+        } else {
+          setTimeout(() => {
+            setOpenedCards([]);
+          }, 1000);
+        }
+      }
+    };
+    
+    
+  //  check for game win
+  useEffect(() => {
+    if (matchedCards.length === cardImages.length) {
+      setIsGameWin(true);
+    }
+  }, [matchedCards, cardImages]);
+
+  // check for game timeout
+  useEffect(() => {
+    console.log("Time left:", timeLeft); // Log the value of timeLeft
+    console.log("isGameOver:", isGameOver); // Log the value of isGameOver
+    if (timeLeft === 0 ) {
+      console.log("Timeout occurred!"); // Log that timeout occurred
+      setIsGameOver(true);
+    }
+  }, [timeLeft, isGameOver]);
+  
+
+
+    const isCardOpened = (id: number) => {
+      return openedCards.includes(id);
+  };
+
+
+  const isCardMatched = (id: number) => {
+      return matchedCards.includes(id);
+  };
+
+
+    return (
+      <ThemeProvider theme={currentTheme}>
+        <Navbar />
+        <GlobalStyle />
+        <ContainerWrapper>
+            <CardText>
+                <Label isBold>STAGE 1</Label>
+            </CardText>
+            <CardContainer>
+              <CardRow>
+                {cardImages.slice(0, 3).map((card) => (
+                  <Card
+                    key={card.id}
+                    id={card.id}
+                    image={card.image}
+                    isFlipped={isCardOpened(card.id) || isCardMatched(card.id)}
+                    isMatched={isCardMatched(card.id)}
+                    onClick={() => handleCardClick(card.id)}
+                  >
+                    {isCardOpened(card.id) || isCardMatched(card.id) ? (
+                            <img src={card.image} alt={`Card ${card.id}`} />
+                        ) : null}
+                  </Card>
+                ))}
+              </CardRow>
+              <CardRow>
+                {cardImages.slice(3, 6).map((card) => (
+                  <Card
+                      key={card.id}
+                      id={card.id}
+                      image={card.image}
+                      isFlipped={isCardOpened(card.id) || isCardMatched(card.id)}
+                      isMatched={isCardMatched(card.id)}
+                      onClick={() => handleCardClick(card.id)}
+                    >
+                    {isCardOpened(card.id) || isCardMatched(card.id) ? (
+                            <img src={card.image} alt={`Card ${card.id}`} />
+                        ) : null}
+                  </Card>
+                ))}
+              </CardRow>
+            </CardContainer>
+            {/* <GameAlerts
+            isGameWin={isGameWin}
+            isGameOver={isGameOver}
+            startGame={startGame}
+          /> */}
+          {isOpeningAllCards && !isGameStarted && !isGameOver && (
+              <div style={{ display: 'none' }}>
+                {cardImages.map((card) => (
+                  <Card
+                    key={card.id}
+                    id={card.id}
+                    image={card.image}
+                    isFlipped={true}
+                    isMatched={isCardMatched(card.id)}
+                    onClick={() => handleCardClick(card.id)}
+                  >
+                    <img src={card.image} alt={`Card ${card.id}`} />
+                  </Card>
+                ))}
+              </div>
+            )}
+              <div style={{ display: 'grid', placeItems: 'end', marginRight: '20px' }}>
+              <IconButton
+                  size="large"
+                  aria-label="show 1 new help"
+                  color="inherit"
+                  aria-controls="menuId"
+                  onClick={startGame}
+                >
+                  <Badge badgeContent={1} overlap="circular" color="success">
+                    <img src={Frame97} alt="" style={{ width: 50, height: 50, fontSize: 16 }} />
+                  </Badge>
+                </IconButton>
+              </div>
+        </ContainerWrapper>
+        {isGameWin && <ModalWin />}
+      {isGameOver && <ModalGameOver />}
+      </ThemeProvider>
+    );
+  };
+
+  export default GamePage;

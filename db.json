@@ -1,0 +1,18 @@
+{
+  "User": [
+    {
+      "Coin": 247,
+      "Level": 1,
+      "Username": "Babyd",
+      "DeductedCoin": 1,
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "Username": "BabyC",
+      "Coin": "500",
+      "DeductedCoin": 0,
+      "Level": 1
+    }
+  ]
+}

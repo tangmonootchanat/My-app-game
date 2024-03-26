@@ -1,24 +1,21 @@
-// useCountdown.ts
 import { useState, useEffect } from 'react';
 
-function useCountdown(initialTime: number): number {
+const useCountdown = (initialTime: number, isGameWin: boolean): number => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
-    // ตั้งค่า interval เมื่อ component mount
-    const timerId = setInterval(() => {
-      setTimeLeft(timeLeft - 1);
-    }, 1000);
+    let intervalId: NodeJS.Timeout;
 
-    // หากเวลาเหลือ 0 หรือ component unmount ให้เคลียร์ interval
-    if (timeLeft === 0) {
-      clearInterval(timerId);
+    if (!isGameWin && timeLeft > 0) {
+      intervalId = setInterval(() => {
+        setTimeLeft((prevTimeLeft) => (prevTimeLeft > 0 ? prevTimeLeft - 1 : 0));
+      }, 1000);
     }
 
-    return () => clearInterval(timerId);
-  }, [timeLeft]);
+    return () => clearInterval(intervalId); // Cleanup the interval on unmount or game win
+  }, [initialTime, isGameWin, timeLeft]);
 
   return timeLeft;
-}
+};
 
 export default useCountdown;

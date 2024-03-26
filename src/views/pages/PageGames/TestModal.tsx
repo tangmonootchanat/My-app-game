@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ModalWin from '../../component/ModalWin';
-import ModalGameOver from '../../component/ModalGameOver';
+import ModalWin from '../../component/alert/ModalWin';
+import ModalGameOver from '../../component/alert/ModalGameOver';
 
 const TestModal: React.FC = () => {
   const [isPopupWinOpen, setIsPopupWinOpen] = useState(false);

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Loadingbar from '../../component/Loading';
+import Loadingbar from '../../component/load/Loading';
 import centerImage from '../../component/Images/Frame 108.png';
 import backgroundImage from '../../component/Images/Slide13.png';
 
