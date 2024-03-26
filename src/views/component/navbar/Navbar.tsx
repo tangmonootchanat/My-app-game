@@ -8,6 +8,7 @@ import Frame75 from '../../component/navbar/images/Frame 75.png';
 import Frame82 from '../../component/navbar/images/Frame 82.png'
 import { FaArrowLeft } from 'react-icons/fa';
 import CountdownTimer from './CountdownTimer';
+import BGmusic from '../../../audio/';
 
 const NavbarContainer = styled.div`
   display: flex;
