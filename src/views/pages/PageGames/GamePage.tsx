@@ -10,6 +10,7 @@
   import { useNavigate } from 'react-router-dom';
   import ModalWin from '../../component/alert/ModalWin';
   import ModalGameOver from '../../component/alert/ModalGameOver';
+  import BuyHelpButtonComponent from '../../component/BuyHelpPopup';
   import useCountdown from '../../component/UseCountdown';
 
 
@@ -111,6 +112,47 @@
     margin: 30px;
   `;
 
+  //ส่วนของการซื้อตัวช่วย
+  const StyledBuyHelpButton = styled(IconButton)`
+  && {
+    background-color: ${(props) => props.theme.buttonClock};
+    border-color: ${(props) => props.theme.buttonClock};
+    font-weight: bold;
+    &:hover {
+      background-color: ${(props) => props.theme.buttonClock};
+      border-color: ${(props) => props.theme.buttonClock};
+      opacity: 0.8;
+    }
+  }
+`;
+
+const BuyHelpPopup = styled.div`
+  width: 300px;
+  height: 200px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -150px;
+  background-color: white;
+  border-radius: 20px;
+  border: 3px solid black;
+  transform: translateY(-50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BuyHelpButton = styled.button`
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+`;
+
 
   const GamePage: React.FC = () => {
     const selectedTheme = 'selectedThemes';
@@ -130,6 +172,14 @@
     const [randomImage, setRandomImage] = useState(0);
     const timeLeft = useCountdown(1 * 60, isGameWin);
     const navigate = useNavigate();
+
+    const [isOpen, setIsOpen] = useState(false);
+    const handleBuyHelpClick = () => {
+      setIsOpen(true);
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1000);
+    };
     
 
     useEffect(() => {
@@ -290,6 +340,7 @@
   const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
   const [totalCoin, setTotalCoin] = useState<number>(0);
   const [deductedCoin, setDeductedCoin] = useState<number>(0);
+  const [helpBought, setHelpBought] = useState(false); // Declare helpBought state variable
 
  
   useEffect(() => {
@@ -302,6 +353,7 @@
         setDeductedCoin(data.DeductedCoin)
         setEmpLevel(data.Level);
         setTotalCoin(data.Coin); 
+        console.log(data);
       })
       .catch(error => {
         console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
@@ -394,7 +446,7 @@
             isGameOver={isGameOver}
             startGame={startGame}
           /> */}
-          {isOpeningAllCards && !isGameStarted && !isGameOver && (
+          {isOpeningAllCards && !isGameStarted && !isGameOver && !isOpen && (
               <div style={{ display: 'none' }}>
                 {cardImages.map((card) => (
                   <Card
@@ -410,22 +462,12 @@
                 ))}
               </div>
             )}
-              <div style={{ display: 'grid', placeItems: 'end', marginRight: '20px' }}>
-              <IconButton
-                  size="large"
-                  aria-label="show 1 new help"
-                  color="inherit"
-                  aria-controls="menuId"
-                  onClick={startGame}
-                >
-                  <Badge badgeContent={1} overlap="circular" color="success">
-                    <img src={Frame97} alt="" style={{ width: 50, height: 50, fontSize: 16 }} />
-                  </Badge>
-                </IconButton>
-              </div>
+            <BuyHelpButtonComponent onClose={() => {}} />
+          {helpBought && <div>ตัวช่วยถูกซื้อแล้ว</div>}
         </ContainerWrapper>
         {isGameWin && <ModalWin />}
       {isGameOver && <ModalGameOver />}
+      {empCoin < selectedCoin! && <BuyHelpPopup />}
       </ThemeProvider>
     );
   };

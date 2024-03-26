@@ -408,19 +408,15 @@ console.log("selectedCoin :", selectedCoin );
       {showPopup && (
         <Popup>
          <CloseButton onClick={handleCancel}><FontAwesomeIcon icon={faXmark} /></CloseButton>
-    <PopupText>Level {selectedLevel}</PopupText>
-    <SelectText>Select Coin</SelectText>
-    <WrapperCoin>
-  {[1, 5, 10].map((coinValue) => (
-    <Coin key={coinValue} selected={selectedCoin === coinValue} onClick={() => handleCoinSelect(coinValue)}>{coinValue}</Coin>
-  ))}
-</WrapperCoin>
-
-           
+          <PopupText>Level {selectedLevel}</PopupText>
+          <SelectText>Select Coin</SelectText>
+          <WrapperCoin>
+            {[1, 5, 10].map((coinValue) => (
+              <Coin key={coinValue} selected={selectedCoin === coinValue} onClick={() => handleCoinSelect(coinValue)}>{coinValue}</Coin>
+            ))}
+          </WrapperCoin>
           <ButtonContainer>
-        <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={() => {selectedCoin !== null && selectedCoin !== undefined ? handleConfirm() : setShowPopup(true);}}>Play</Button>
-
-
+            <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={() => {selectedCoin !== null && selectedCoin !== undefined ? handleConfirm() : setShowPopup(true);}}>Play</Button>
           </ButtonContainer>
         </Popup>
       )}

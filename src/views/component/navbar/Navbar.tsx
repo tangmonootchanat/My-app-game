@@ -9,7 +9,6 @@ import Frame82 from '../../component/navbar/images/Frame 82.png'
 import { FaArrowLeft } from 'react-icons/fa';
 import CountdownTimer from './CountdownTimer';
 
-
 const NavbarContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -108,6 +107,9 @@ function Navbar() {
   const navigate = useNavigate();
   const [isFrame100, setIsFrame100] = useState(true);
   const [empCoin, setEmpCoin] = useState(null);
+  const [deductedCoin, setDeductedCoin] = useState<number>(0);
+  const [totalCoin, setTotalCoin] = useState(0); // ค่าเหรียญทั้งหมด
+  const [helpBought, setHelpBought] = useState(false); // Declare helpBought state variable
   const location = useLocation();
   const isSelectGamePage = location.pathname === '/Selectgame';
   const isGamePage = location.pathname.startsWith('/GamePage/');
@@ -118,40 +120,62 @@ function Navbar() {
       .then(response => response.json())
       .then(data => {
         setEmpCoin(data.Coin);
+        setDeductedCoin(data.DeductedCoin)
+        setTotalCoin(data.Coin); // ตั้งค่าค่าเหรียญทั้งหมด
         console.log(data);
       })
       .catch(error => {
         console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
       });
   }, []);
+
+  useEffect(() => {
+    if (empCoin !== null && deductedCoin > 0) {
+      const newTotalCoin = empCoin - deductedCoin;
+      setTotalCoin(newTotalCoin); // อัปเดตจำนวนเหรียญทั้งหมดใหม่
+    }
+  }, [deductedCoin, empCoin]);
+  
+  
   const handleClick = () => {
     setIsFrame100(!isFrame100);
+    if (!helpBought) {
+      setHelpBought(true); // Update that help is bought
+      // Ensure empCoin and deductedCoin are numbers
+      if (typeof empCoin === 'number' && typeof deductedCoin === 'number') {
+        // Ensure deductedCoin is not greater than empCoin
+        const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
+        setTotalCoin(newTotalCoin);
+      }
+    }
    };
   const handleBack = () => {
     navigate('/Homegame'); 
    };
   return (
     <NavbarContainer>
-    {isSelectGamePage && (
-        <BackButton onClick={handleBack}>
-          <BackIcon />
-        </BackButton>
-      )}
-      {isGamePage && (
-        <>
-          <ClockW src={Frame75}/>
-          <Clocks><CountdownTimer/></Clocks>
-        </>
-      )}
-    <div></div> 
+      {isSelectGamePage && (
+          <BackButton onClick={handleBack}>
+            <BackIcon />
+          </BackButton>
+        )}
+        {isGamePage && (
+          <>
+            <ClockW src={Frame75}/>
+            <Clocks><CountdownTimer/></Clocks>
+          </>
+        )}
+      <div></div> 
      <C>
-      <Coins src={Frame82}/>
-      <Coin>{empCoin}</Coin>
+        <Coins src={Frame82}/>
+        <Coin>{empCoin}</Coin>
 
-    <NavbarSetting>
-        <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
-       {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
-      </NavbarSetting>
+
+        <NavbarSetting>
+          <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
+          {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
+        </NavbarSetting>
+
      </C>
     </NavbarContainer>
   );
