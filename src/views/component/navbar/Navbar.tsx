@@ -1,14 +1,14 @@
-import React, { useState , useEffect} from 'react';
-import { useNavigate ,useLocation  } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Frame100 from '../../component/navbar/images/Frame 100.png';
 import Frame101 from '../../component/navbar/images/Frame 101.png';
 import Frame102 from '../../component/navbar/images/Frame 102.png';
 import Frame75 from '../../component/navbar/images/Frame 75.png';
-import Frame82 from '../../component/navbar/images/Frame 82.png'
+import Frame82 from '../../component/navbar/images/Frame 82.png';
 import { FaArrowLeft } from 'react-icons/fa';
 import CountdownTimer from './CountdownTimer';
-import BGmusic from '../../../audio/';
+import BGmusic from '../../../audio/BackgroundMusic.mp3';
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -16,18 +16,20 @@ const NavbarContainer = styled.div`
   align-items: center;
   padding: 1rem 2rem;
   color: #fff;
-  
 `;
+
 const NavbarSetting = styled.div`
   color: #fff;
   flex-direction: column;
 `;
+
 const Setting = styled.img`
-  width: 40px; 
-  height: auto; 
+  width: 40px;
+  height: auto;
   cursor: pointer;
-  margin-bottom:4px;
+  margin-bottom: 4px;
 `;
+
 const SettingS = styled.img`
   width: 40px;
   height: auto;
@@ -36,41 +38,46 @@ const SettingS = styled.img`
   color: #fff;
   flex-direction: column;
 `;
+
 const BackButton = styled.button`
-  background-color:${(props) => props.theme.buttonBack};
-  color: #fff; 
-  border: none; 
+  background-color: ${(props) => props.theme.buttonBack};
+  color: #fff;
+  border: none;
   border-radius: 10px;
-  width: 40px; 
-  height: 40px; 
+  width: 40px;
+  height: 40px;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 
   &:hover {
-    background-color:${(props) => props.theme.boxColor}; 
-    color:#000;
+    background-color: ${(props) => props.theme.boxColor};
+    color: #000;
   }
 `;
+
 const BackIcon = styled(FaArrowLeft)`
-  font-size: 20px; 
+  font-size: 20px;
 `;
+
 const ClockW = styled.img`
-  width: 40px; 
-  height: auto; 
+  width: 40px;
+  height: auto;
   position: absolute;
 `;
+
 const C = styled.div`
   display: flex;
   justify-content: space-between;
-  gap:20px;
+  gap: 20px;
 `;
+
 const Clocks = styled.div`
   width: 147px;
   height: 39px;
-  margin-left:20px;
-  margin-top:5px;
+  margin-left: 20px;
+  margin-top: 5px;
   background-color: ${(props) => props.theme.buttonClock};
   border-radius: 3px;
   font-size: 18px;
@@ -81,11 +88,12 @@ const Clocks = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const Coin = styled.div`
   width: 147px;
   height: 39px;
-  margin-left:20px;
-  margin-top:5px;
+  margin-left: 20px;
+  margin-top: 5px;
   background-color: ${(props) => props.theme.buttonClock};
   border-radius: 3px;
   font-size: 18px;
@@ -96,15 +104,15 @@ const Coin = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const Coins = styled.img`
- width: 50px; 
-  height: auto; 
-  position: absolute; 
- 
+  width: 50px;
+  height: auto;
+  position: absolute;
 `;
 
 function Navbar() {
-  const [showDropdown, setShowDropdown] = useState(false); 
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
   const [isFrame100, setIsFrame100] = useState(true);
   const [empCoin, setEmpCoin] = useState(null);
@@ -114,14 +122,14 @@ function Navbar() {
   const location = useLocation();
   const isSelectGamePage = location.pathname === '/Selectgame';
   const isGamePage = location.pathname.startsWith('/GamePage/');
-   
+
   useEffect(() => {
     const userId = '1';
     fetch(`http://localhost:8000/User/${userId}`)
       .then(response => response.json())
       .then(data => {
         setEmpCoin(data.Coin);
-        setDeductedCoin(data.DeductedCoin)
+        setDeductedCoin(data.DeductedCoin);
         setTotalCoin(data.Coin); // ตั้งค่าค่าเหรียญทั้งหมด
         console.log(data);
       })
@@ -136,8 +144,7 @@ function Navbar() {
       setTotalCoin(newTotalCoin); // อัปเดตจำนวนเหรียญทั้งหมดใหม่
     }
   }, [deductedCoin, empCoin]);
-  
-  
+
   const handleClick = () => {
     setIsFrame100(!isFrame100);
     if (!helpBought) {
@@ -149,36 +156,42 @@ function Navbar() {
         setTotalCoin(newTotalCoin);
       }
     }
-   };
+  };
+
   const handleBack = () => {
-    navigate('/Homegame'); 
-   };
+    navigate('/Homegame');
+  };
+
   return (
     <NavbarContainer>
       {isSelectGamePage && (
-          <BackButton onClick={handleBack}>
-            <BackIcon />
-          </BackButton>
-        )}
-        {isGamePage && (
-          <>
-            <ClockW src={Frame75}/>
-            <Clocks><CountdownTimer/></Clocks>
-          </>
-        )}
-      <div></div> 
-     <C>
-        <Coins src={Frame82}/>
+        <BackButton onClick={handleBack}>
+          <BackIcon />
+        </BackButton>
+      )}
+      {isGamePage && (
+        <>
+          <ClockW src={Frame75} />
+          <Clocks>
+            <CountdownTimer />
+          </Clocks>
+        </>
+      )}
+      <div></div>
+      <C>
+        <Coins src={Frame82} />
         <Coin>{empCoin}</Coin>
-
 
         <NavbarSetting>
           <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
-          {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
+          {showDropdown && (
+            <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />
+          )}
+          {showDropdown && <audio src={BGmusic} autoPlay loop />}
         </NavbarSetting>
-
-     </C>
+      </C>
     </NavbarContainer>
   );
 }
+
 export default Navbar;
