@@ -33,38 +33,30 @@ const TestModal: React.FC = () => {
   };
 
   const handleBuyHelp = () => {
-    setIsOpeningAllCards(true);
-    // setTimeout(() => {
-    //   setIsOpeningAllCards(false);
-    // }, 6000); // Close all cards after 6 seconds
+    setIsOpeningAllCards(false);
+    setTimeout(() => {
+      closeAllCards();
+      setIsOpeningAllCards(false);
+    }, 3000); 
   };
   
-  // useEffect(() => {
-  //   if (openedCards.length > 0) {
-  //     const timeout = setTimeout(() => {
-  //       closeAllCards();
-  //     }, 5000);
-  
-  //     return () => {
-  //       clearTimeout(timeout);
-  //     };
-  //   }
-  // }, [openedCards, isOpeningAllCards]);
+
 
   useEffect(() => {
-    if (!isOpeningAllCards && !openedCards) {
-      setIsOpeningAllCards(true);
+    if (isOpeningAllCards) {
+      openAllCards();
+
       const timeout = setTimeout(() => {
-        closeAllCards();
-      }, 5000);
-  
-      return () => {
-        clearTimeout(timeout);
-      };
+        closeAllCards(); 
+        setIsOpeningAllCards(false);
+      }, 3000); 
+
+      return () => clearTimeout(timeout);
     }
-  }, [isOpeningAllCards, openedCards]);
-  
-  
+  }, [isOpeningAllCards]);
+
+
+   
   
   const cardImages = [
     { id: 1, image: 'Img1' },
@@ -75,13 +67,13 @@ const TestModal: React.FC = () => {
   const openAllCards = () => {
     setOpenedCards(cardImages.map((card) => card.id)); // เปิดการ์ดโดยใช้ ID จากข้อมูลการ์ด
   };
- 
+
   const closeAllCards = () => {
     setOpenedCards([]);
   };
-
-
-
+  
+ 
+  
   return (
     <div>
       <button onClick={handleOpenPopupWin}>Open Win Popup</button>

@@ -457,7 +457,7 @@ useEffect(() => {
               ))}
             </div>
           )}
-          <BuyHelpButtonComponent onClose={() => {}} onBuyHelp={openAllCards} />
+           <BuyHelpButtonComponent onClose={() => {}} onBuyHelp={openAllCards} />
         {helpBought && <div>ตัวช่วยถูกซื้อแล้ว</div>}
       </ContainerWrapper>
       {isGameWin && <ModalWin />}
