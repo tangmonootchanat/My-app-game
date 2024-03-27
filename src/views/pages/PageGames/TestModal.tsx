@@ -30,40 +30,32 @@ const TestModal: React.FC = () => {
   const handleClosePopup = () => {
     setIsPopupWinOpen(false);
     setIsPopupGameOverOpen(false);
+    setIsOpen(false); // ตั้งค่าเป็น false เมื่อปิด Popup
   };
 
   const handleBuyHelp = () => {
-    setIsOpeningAllCards(false);
-    setTimeout(() => {
-      closeAllCards();
-      setIsOpeningAllCards(false);
-    }, 3000); 
+    setIsOpeningAllCards(true);
   };
   
-
 
   useEffect(() => {
     if (isOpeningAllCards) {
       openAllCards();
 
       const timeout = setTimeout(() => {
-        closeAllCards(); 
+        closeAllCards();
         setIsOpeningAllCards(false);
-      }, 3000); 
+      }, 3000);
 
       return () => clearTimeout(timeout);
     }
   }, [isOpeningAllCards]);
 
-
-   
-  
   const cardImages = [
-    { id: 1, image: 'Img1' },
-    { id: 2, image: 'Img2' },
-    { id: 3, image: 'Img3' },
+    { id: 1, image: Img1 },
+    { id: 2, image: Img2 },
+    { id: 3, image: Img3 },
   ];
-  
   const openAllCards = () => {
     setOpenedCards(cardImages.map((card) => card.id)); // เปิดการ์ดโดยใช้ ID จากข้อมูลการ์ด
   };
@@ -71,7 +63,6 @@ const TestModal: React.FC = () => {
   const closeAllCards = () => {
     setOpenedCards([]);
   };
-  
  
   
   return (

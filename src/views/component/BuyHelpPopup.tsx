@@ -169,10 +169,14 @@ const BuyHelpButtonComponent: React.FC<BuyHelpButtonProps> = ({ onClose, onBuyHe
   const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
   const [totalCoin, setTotalCoin] = useState<number>(0);
   const [deductedCoin, setDeductedCoin] = useState<number>(0);
+  const [deductedCoinDisplay, setDeductedCoinDisplay] = useState<number>(0);
   const [helpBought, setHelpBought] = useState(false);
   const [imageSrc, setImageSrc] = useState(Frame97); 
 
  console.log(deductedCoin)
+
+ console.log(deductedCoinDisplay)
+
 
  const handleBuyHelpClick = () => {
   if (!helpBought && totalCoin >= 1) {
@@ -228,6 +232,8 @@ useEffect(() => {
             console.log('เหรียญคงเหลือเป็น:', newCoinValue);
             // ที่นี่คุณสามารถดำเนินการเพิ่มเติมหลังจากการซื้อเสร็จสิ้นได้
             setHelpBought(true); // ตั้งค่าเป็น true เมื่อช่วยถูกซื้อ
+            setEmpCoin(empCoin);
+            setDeductedCoinDisplay(deductedCoin);
           })
           .catch((error) => {
             console.error('เกิดข้อผิดพลาดในการอัพเดตค่าเหรียญ:', error);
@@ -237,6 +243,8 @@ useEffect(() => {
         console.log('จำนวนเหรียญไม่เพียงพอ');
       }
     }
+    console.log(`empCoin after filter help: ${empCoin}`);
+    console.log(`selectedCoin : ${selectedCoin}`);
   };
 
   useEffect(() => {
@@ -282,6 +290,7 @@ useEffect(() => {
         setEmpCoin(updatedCoins);
     }
   }, [selectedCoin, empCoin]);
+  
 
 
   useEffect(() => {
