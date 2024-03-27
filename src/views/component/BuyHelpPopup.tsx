@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import styled, {  css ,ThemeProvider, createGlobalStyle } from 'styled-components';
 import { lightTheme } from '../../styles/theme';
-import { IconButton } from '@mui/material';
+import { Badge, IconButton } from '@mui/material';
 import Frame97 from '../component/alert/image/Frame 97.png';
 import Frame136 from '../component/alert/image/Frame 136.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
-interface PopupProps {
-  onClose?: () => void;
+// interface PopupProps {
+//   onClose?: () => void;
+// }
+
+interface BuyHelpButtonProps {
+  onClose: () => void;
+  onBuyHelp: () => void;
 }
 
 const BuyHelpButton = styled(IconButton)`
@@ -152,13 +157,13 @@ const GlobalStyle = createGlobalStyle<{ theme: any }>`
 
   
 
-function BuyHelpButtonComponent({ onClose }: PopupProps) {
+const BuyHelpButtonComponent: React.FC<BuyHelpButtonProps> = ({ onClose, onBuyHelp }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
   const [showPopup, setShowPopup] = useState(false);
   const selectedTheme = 'selectedThemes';
   const [selectedLevel, setSelectedLevel] = useState(1);
-  const [empCoin, setEmpCoin] = useState<number | null>(null);
+  const [empCoin, setEmpCoin] = useState<number[]>([]);
   const [empLevel, setEmpLevel] = useState(null);
   const [empUsername, setEmpUsername] = useState(null);
   const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
@@ -169,17 +174,11 @@ function BuyHelpButtonComponent({ onClose }: PopupProps) {
 
  console.log(deductedCoin)
 
- const openAllCards = () => {
-  setIsOpen(true);
-};
-
-
  const handleBuyHelpClick = () => {
   if (!helpBought && totalCoin >= 1) {
     setIsOpen(true);
     setShowPopup(true);
     setImageSrc(Frame136);
-    openAllCards(); // เมื่อซื้อตัวช่วยสำเร็จให้เรียกฟังก์ชันเพื่อเปิดการ์ดทั้งหมด
   }
 }
 
@@ -188,38 +187,19 @@ useEffect(() => {
   fetch(`http://localhost:8000/User/${userId}`)
     .then(response => response.json())
     .then(data => {
-      setIsOpen(true);
       setEmpCoin(data.Coin);
+      setEmpUsername(data.Username);
       setDeductedCoin(data.DeductedCoin)
-      setTotalCoin(data.Coin); // ตั้งค่าค่าเหรียญทั้งหมด
-      console.log(data);
+      setEmpLevel(data.Level);
+      setTotalCoin(data.Coin); 
     })
     .catch(error => {
       console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
     });
-}, [deductedCoin]);
-
-useEffect(() => {
-  if (empCoin !== null) {
-    if (Array.isArray(empCoin)) {
-      const sumCoins = empCoin.reduce((acc, val) => acc + val, 0);
-      setTotalCoin(sumCoins);
-    } else {
-      setTotalCoin(empCoin);
-    }
-  }
-}, [empCoin]);
+}, []);
 
 
-
-useEffect(() => {
-  if (totalCoin !== null && deductedCoin > 0) {
-    const newTotalCoin = Math.max(totalCoin - deductedCoin, 0);
-    setTotalCoin(newTotalCoin);
-  }
-}, [totalCoin, deductedCoin]);
-
-
+// ส่วนที่เพิ่มใน handleConfirm สำหรับลดจำนวนเหรียญเมื่อซื้อช่วย
   const handleConfirm = () => {
     setShowPopup(false);
     if (selectedCoin !== null && selectedCoin !== undefined) {
@@ -227,13 +207,9 @@ useEffect(() => {
       if (totalCoin >= selectedCoin) {
         const newCoinValue = totalCoin - selectedCoin;
         setTotalCoin(newCoinValue);
-        // setDeductedCoin(selectedCoin);
-
-
-        openAllCards(); // เปิดการ์ดทั้งหมดโชว์ทันที
-        setHelpBought(true); // ตั้งค่าเป็น true เมื่อช่วยถูกซื้อ
-
-    
+        setDeductedCoin(selectedCoin);
+        onBuyHelp();
+  
         const userId = '1';
         fetch(`http://localhost:8000/User/${userId}`, {
           method: 'PUT',
@@ -251,6 +227,7 @@ useEffect(() => {
           .then((data) => {
             console.log('เหรียญคงเหลือเป็น:', newCoinValue);
             // ที่นี่คุณสามารถดำเนินการเพิ่มเติมหลังจากการซื้อเสร็จสิ้นได้
+            setHelpBought(true); // ตั้งค่าเป็น true เมื่อช่วยถูกซื้อ
           })
           .catch((error) => {
             console.error('เกิดข้อผิดพลาดในการอัพเดตค่าเหรียญ:', error);
@@ -288,21 +265,21 @@ useEffect(() => {
     }
   }, [empCoin, deductedCoin]);
   
-  
 
   const handleCancel = () => {
     setShowPopup(false);
   };
 
   
+
   const handleCoinSelect = (coinValue: number) => {
     setSelectedCoin(coinValue);
-  };;
+  };
 
   useEffect(() => {
-    if (selectedCoin !== null && empCoin !== null) {
-      const newCoinValue = Math.max(empCoin - selectedCoin, 0);
-      setTotalCoin(newCoinValue);
+    if (selectedCoin !== null && Array.isArray(empCoin)) {
+        const updatedCoins = empCoin.filter((coin: number) => coin !== selectedCoin);
+        setEmpCoin(updatedCoins);
     }
   }, [selectedCoin, empCoin]);
 
@@ -346,7 +323,7 @@ useEffect(() => {
                 ))}
               </WrapperCoin>
               <ButtonContainer>
-                  <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={handleConfirm}>Buy Help</Button>
+                  <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={() => { onBuyHelp(); handleConfirm(); }}>Buy Help</Button>
               </ButtonContainer>
             </PopupCard>
           )}

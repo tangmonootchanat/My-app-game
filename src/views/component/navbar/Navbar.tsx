@@ -115,7 +115,9 @@ function Navbar() {
   const location = useLocation();
   const isSelectGamePage = location.pathname === '/Selectgame';
   const isGamePage = location.pathname.startsWith('/GamePage/');
-   
+  const isHomegame = location.pathname === '/Homegame';
+  const isLoad = location.pathname === '/';
+  const audioRef = useRef<HTMLAudioElement>(null);
   useEffect(() => {
     const userId = '1';
     fetch(`http://localhost:8000/User/${userId}`)
@@ -129,14 +131,8 @@ function Navbar() {
       .catch(error => {
         console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
       });
-  }, [deductedCoin]);
+  }, []);
 
-  useEffect(() => {
-    if (empCoin !== null) {
-      setTotalCoin(empCoin);
-    }
-  }, [empCoin]);
-  
   useEffect(() => {
     if (empCoin !== null && deductedCoin > 0) {
       const newTotalCoin = empCoin - deductedCoin;
@@ -144,21 +140,35 @@ function Navbar() {
     }
   }, [deductedCoin, empCoin]);
   
+  useEffect(() => {
+    const playAudio = () => {
+      if (isGamePage || isSelectGamePage || isLoad || isHomegame) {
+        if (audioRef.current) {
+          audioRef.current.play();
+        }
+      }
+    };
+  
+    const handleInteraction = () => {
+      document.removeEventListener('click', handleInteraction);
+      playAudio();
+    };
+  
+    document.addEventListener('click', handleInteraction);
+  
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+    };
+  }, [isGamePage, isSelectGamePage, isLoad, isHomegame]);
+  
+
   
   const handleClick = () => {
     setIsFrame100(!isFrame100);
-    if (!helpBought) {
-      setHelpBought(true); // Update that help is bought
-      // Ensure empCoin and deductedCoin are numbers
-      if (typeof empCoin === 'number' && typeof deductedCoin === 'number') {
-        // Ensure deductedCoin is not greater than empCoin
-        const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
-        setTotalCoin(newTotalCoin);
-      }
-    }
+    
+   
    };
   const handleBack = () => {
-    setIsGamePlaying((prevIsGamePlaying) => !prevIsGamePlaying);
     navigate('/Homegame'); 
    };
   return (
@@ -179,16 +189,16 @@ function Navbar() {
         <Coins src={Frame82}/>
         <Coin>{empCoin}</Coin>
 
-
-        <NavbarSetting>
+        
+         <NavbarSetting>
           <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
           {showDropdown && (
             <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />
           )}
          {isFrame100 && <audio ref={audioRef} src={BGmusic} autoPlay loop />}
         </NavbarSetting>
-      </C>
 
+     </C>
     </NavbarContainer>
   );
 }

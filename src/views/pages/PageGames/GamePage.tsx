@@ -174,22 +174,12 @@ const GamePage: React.FC = () => {
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
-
-  
   const handleBuyHelpClick = () => {
     setIsOpen(true);
     setTimeout(() => {
       setIsOpen(false);
-      const newCoinValue = empCoin - selectedCoin!;
-      setEmpCoin(newCoinValue);
-      setTotalCoin(newCoinValue);
-      setSelectedCoin(null);
-  
-      // สร้างตัวช่วยที่จะเปิดการ์ดทั้งหมด
-      openAllCards();
-    }, 6000);
+    }, 1000);
   };
-  
   
 
   useEffect(() => {
@@ -205,7 +195,6 @@ const GamePage: React.FC = () => {
     if (isOpeningAllCards) {
       openAllCards();
       setTimeout(() => {
-        setIsOpen(true);
         closeAllCards();
         setIsOpeningAllCards(false);
       }, 3000); // เปิดการ์ดเป็นเวลา 3 วินาที
@@ -280,23 +269,16 @@ useEffect(() => {
   }, []);
   
 
-// เปิดการ์ดทั้งหมด
   const openAllCards = () => {
     setOpenedCards(cardImages.map((card) => card.id));
   };
-// ปิดการ์ดทั้งหมด
+
+
   const closeAllCards = () => {
     setOpenedCards([]);
   };
- // ตรวจสอบสถานะการ์ดว่าเปิดอยู่หรือไม่
-  const isCardOpened = (id: number) => {
-    return openedCards.includes(id);
-  };
-// ตรวจสอบสถานะการ์ดว่าถูกจับคู่แล้วหรือไม่
-  const isCardMatched = (id: number) => {
-      return matchedCards.includes(id);
-  };
-// จัดการเมื่อมีการคลิกที่การ์ด
+
+
   const handleCardClick = (id: number) => {
     if (matchedCards.includes(id) || openedCards.length === 6) {
       return;
@@ -319,7 +301,6 @@ useEffect(() => {
       } else {
         setTimeout(() => {
           setOpenedCards([]);
-          closeAllCards();
         }, 1000);
       }
     }
@@ -345,7 +326,14 @@ useEffect(() => {
 
 
 
+  const isCardOpened = (id: number) => {
+    return openedCards.includes(id);
+};
 
+
+const isCardMatched = (id: number) => {
+    return matchedCards.includes(id);
+};
 const [empCoin, setEmpCoin] = useState<number>(0);
 const [empLevel, setEmpLevel] = useState<number>(0);
 const [empUsername, setEmpUsername] = useState(null);
@@ -375,7 +363,6 @@ useEffect(() => {
 const returnDeductedCoins = () => {
   const newCoinValue = empCoin + (deductedCoin * 2);
   setEmpCoin(newCoinValue);
-  setTotalCoin(newCoinValue);
   setDeductedCoin(0); // Reset deducted coin to 0
   const newLevel = empLevel + 1; // Increase level by 1
   setEmpLevel(newLevel); // Update local state of level
@@ -401,7 +388,6 @@ const returnDeductedCoins = () => {
 useEffect(() => {
   if (isGameWin) {
     returnDeductedCoins();
-    openAllCards(); // เมื่อชนะเกมให้เรียกฟังก์ชันเพื่อเปิดการ์ดทั้งหมด
   }
 }, [isGameWin]);
 
@@ -455,11 +441,6 @@ useEffect(() => {
               ))}
             </CardRow>
           </CardContainer>
-          {/* <GameAlerts
-          isGameWin={isGameWin}
-          isGameOver={isGameOver}
-          startGame={startGame}
-        /> */}
         {isOpeningAllCards && !isGameStarted && !isGameOver && !isOpen && (
             <div style={{ display: 'none' }}>
               {cardImages.map((card) => (
@@ -476,11 +457,12 @@ useEffect(() => {
               ))}
             </div>
           )}
-          <BuyHelpButtonComponent onClose={() => {}} />
+          <BuyHelpButtonComponent onClose={() => {}} onBuyHelp={openAllCards} />
+        {helpBought && <div>ตัวช่วยถูกซื้อแล้ว</div>}
       </ContainerWrapper>
       {isGameWin && <ModalWin />}
     {isGameOver && <ModalGameOver />}
-    {selectedCoin !== null && empCoin < selectedCoin && <BuyHelpPopup />}
+    {empCoin < selectedCoin! && <BuyHelpPopup />}
     </ThemeProvider>
   );
 };
