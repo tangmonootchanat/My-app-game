@@ -188,6 +188,8 @@ function Navbar() {
      <C>
         <Coins src={Frame82}/>
         <Coin>{empCoin}</Coin>
+
+        
          <NavbarSetting>
           <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
           {showDropdown && (

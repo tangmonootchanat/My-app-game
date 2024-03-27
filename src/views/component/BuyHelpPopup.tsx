@@ -8,8 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
-interface PopupProps {
-  onClose?: () => void;
+// interface PopupProps {
+//   onClose?: () => void;
+// }
+
+interface BuyHelpButtonProps {
+  onClose: () => void;
+  onBuyHelp: () => void;
 }
 
 const BuyHelpButton = styled(IconButton)`
@@ -152,7 +157,7 @@ const GlobalStyle = createGlobalStyle<{ theme: any }>`
 
   
 
-function BuyHelpButtonComponent({ onClose }: PopupProps) {
+const BuyHelpButtonComponent: React.FC<BuyHelpButtonProps> = ({ onClose, onBuyHelp }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
   const [showPopup, setShowPopup] = useState(false);
@@ -203,6 +208,7 @@ useEffect(() => {
         const newCoinValue = totalCoin - selectedCoin;
         setTotalCoin(newCoinValue);
         setDeductedCoin(selectedCoin);
+        onBuyHelp();
   
         const userId = '1';
         fetch(`http://localhost:8000/User/${userId}`, {
@@ -317,7 +323,7 @@ useEffect(() => {
                 ))}
               </WrapperCoin>
               <ButtonContainer>
-                  <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={handleConfirm}>Buy Help</Button>
+                  <Button disabled={selectedCoin === null || selectedCoin === undefined} onClick={() => { onBuyHelp(); handleConfirm(); }}>Buy Help</Button>
               </ButtonContainer>
             </PopupCard>
           )}
