@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState , useEffect, useRef } from 'react';
 import { useNavigate ,useLocation  } from 'react-router-dom';
 import styled from 'styled-components';
 import Frame100 from '../../component/navbar/images/Frame 100.png';
@@ -8,6 +8,7 @@ import Frame75 from '../../component/navbar/images/Frame 75.png';
 import Frame82 from '../../component/navbar/images/Frame 82.png'
 import { FaArrowLeft } from 'react-icons/fa';
 import CountdownTimer from './CountdownTimer';
+import BGmusic from '../../../audio/BackgroundMusic.mp3';
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -106,6 +107,7 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false); 
   const navigate = useNavigate();
   const [isFrame100, setIsFrame100] = useState(true);
+  const [isMusicStarted, setIsMusicStarted] = useState(false);
   const [empCoin, setEmpCoin] = useState(null);
   const [deductedCoin, setDeductedCoin] = useState<number>(0);
   const [totalCoin, setTotalCoin] = useState(0); // ค่าเหรียญทั้งหมด
@@ -113,7 +115,9 @@ function Navbar() {
   const location = useLocation();
   const isSelectGamePage = location.pathname === '/Selectgame';
   const isGamePage = location.pathname.startsWith('/GamePage/');
-   
+  const isHomegame = location.pathname === '/Homegame';
+  const isLoad = location.pathname === '/';
+  const audioRef = useRef<HTMLAudioElement>(null);
   useEffect(() => {
     const userId = '1';
     fetch(`http://localhost:8000/User/${userId}`)
@@ -136,18 +140,33 @@ function Navbar() {
     }
   }, [deductedCoin, empCoin]);
   
+  useEffect(() => {
+    const playAudio = () => {
+      if (isGamePage || isSelectGamePage || isLoad || isHomegame) {
+        if (audioRef.current) {
+          audioRef.current.play();
+        }
+      }
+    };
+  
+    const handleInteraction = () => {
+      document.removeEventListener('click', handleInteraction);
+      playAudio();
+    };
+  
+    document.addEventListener('click', handleInteraction);
+  
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+    };
+  }, [isGamePage, isSelectGamePage, isLoad, isHomegame]);
+  
+
   
   const handleClick = () => {
     setIsFrame100(!isFrame100);
-    if (!helpBought) {
-      setHelpBought(true); // Update that help is bought
-      // Ensure empCoin and deductedCoin are numbers
-      if (typeof empCoin === 'number' && typeof deductedCoin === 'number') {
-        // Ensure deductedCoin is not greater than empCoin
-        const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
-        setTotalCoin(newTotalCoin);
-      }
-    }
+    
+   
    };
   const handleBack = () => {
     navigate('/Homegame'); 
@@ -169,11 +188,12 @@ function Navbar() {
      <C>
         <Coins src={Frame82}/>
         <Coin>{empCoin}</Coin>
-
-
-        <NavbarSetting>
+         <NavbarSetting>
           <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
-          {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
+          {showDropdown && (
+            <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />
+          )}
+         {isFrame100 && <audio ref={audioRef} src={BGmusic} autoPlay loop />}
         </NavbarSetting>
 
      </C>
