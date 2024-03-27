@@ -113,6 +113,7 @@ function Navbar() {
   const location = useLocation();
   const isSelectGamePage = location.pathname === '/Selectgame';
   const isGamePage = location.pathname.startsWith('/GamePage/');
+  const [isGamePlaying, setIsGamePlaying] = useState(false);
    
   useEffect(() => {
     const userId = '1';
@@ -127,29 +128,47 @@ function Navbar() {
       .catch(error => {
         console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
       });
-  }, []);
+  }, [deductedCoin]);
 
   useEffect(() => {
-    if (empCoin !== null && deductedCoin > 0) {
-      const newTotalCoin = empCoin - deductedCoin;
-      setTotalCoin(newTotalCoin); // อัปเดตจำนวนเหรียญทั้งหมดใหม่
+    if (empCoin !== null) {
+      setTotalCoin(empCoin);
     }
-  }, [deductedCoin, empCoin]);
+  }, [empCoin]);
+  
+  useEffect(() => {
+    if (totalCoin !== null && deductedCoin > 0) {
+      const newTotalCoin = Math.max(totalCoin - deductedCoin, 0);
+      setTotalCoin(newTotalCoin);
+    }
+  }, [totalCoin, deductedCoin]);
+  
+
+  // useEffect(() => {
+  //   if (empCoin !== null && deductedCoin > 0) {
+  //     const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
+  //     setTotalCoin(newTotalCoin);
+  //   }
+  // }, [deductedCoin, empCoin]);
   
   
   const handleClick = () => {
     setIsFrame100(!isFrame100);
     if (!helpBought) {
       setHelpBought(true); // Update that help is bought
-      // Ensure empCoin and deductedCoin are numbers
+      setIsGamePlaying(true); // เมื่อเริ่มเล่นเกม
+      setIsGamePlaying(false); // เมื่อกลับจากเล่นเกม
+      // Ensure empCoin and deductedCoin are numbers and not null
       if (typeof empCoin === 'number' && typeof deductedCoin === 'number') {
         // Ensure deductedCoin is not greater than empCoin
         const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
         setTotalCoin(newTotalCoin);
       }
     }
-   };
+  };
+  
   const handleBack = () => {
+    setIsGamePlaying((prevIsGamePlaying) => !prevIsGamePlaying);
     navigate('/Homegame'); 
    };
   return (
@@ -166,17 +185,16 @@ function Navbar() {
           </>
         )}
       <div></div> 
-     <C>
-        <Coins src={Frame82}/>
-        <Coin>{empCoin}</Coin>
-
+      <C>
+        <Coins src={Frame82} />
+        <Coin>{isGamePlaying ? totalCoin : empCoin}</Coin>
 
         <NavbarSetting>
           <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
           {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
         </NavbarSetting>
+      </C>
 
-     </C>
     </NavbarContainer>
   );
 }

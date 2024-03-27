@@ -33,6 +33,7 @@ const TestModal: React.FC = () => {
       {isPopupWinOpen && <ModalWin onClose={handleClosePopup} />}
       {isPopupGameOverOpen && <ModalGameOver onClose={handleClosePopup} />}
       {isOpen && <BuyHelpPopup onClose={handleClosePopup} />}
+      
     </div>
   );
 };
