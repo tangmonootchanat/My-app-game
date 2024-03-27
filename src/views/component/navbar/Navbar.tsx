@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState , useEffect, useRef } from 'react';
 import { useNavigate ,useLocation  } from 'react-router-dom';
 import styled from 'styled-components';
 import Frame100 from '../../component/navbar/images/Frame 100.png';
@@ -8,6 +8,7 @@ import Frame75 from '../../component/navbar/images/Frame 75.png';
 import Frame82 from '../../component/navbar/images/Frame 82.png'
 import { FaArrowLeft } from 'react-icons/fa';
 import CountdownTimer from './CountdownTimer';
+import BGmusic from '../../../audio/BackgroundMusic.mp3';
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -106,6 +107,7 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false); 
   const navigate = useNavigate();
   const [isFrame100, setIsFrame100] = useState(true);
+  const [isMusicStarted, setIsMusicStarted] = useState(false);
   const [empCoin, setEmpCoin] = useState(null);
   const [deductedCoin, setDeductedCoin] = useState<number>(0);
   const [totalCoin, setTotalCoin] = useState(0); // ค่าเหรียญทั้งหมด
@@ -113,7 +115,6 @@ function Navbar() {
   const location = useLocation();
   const isSelectGamePage = location.pathname === '/Selectgame';
   const isGamePage = location.pathname.startsWith('/GamePage/');
-  const [isGamePlaying, setIsGamePlaying] = useState(false);
    
   useEffect(() => {
     const userId = '1';
@@ -137,36 +138,25 @@ function Navbar() {
   }, [empCoin]);
   
   useEffect(() => {
-    if (totalCoin !== null && deductedCoin > 0) {
-      const newTotalCoin = Math.max(totalCoin - deductedCoin, 0);
-      setTotalCoin(newTotalCoin);
+    if (empCoin !== null && deductedCoin > 0) {
+      const newTotalCoin = empCoin - deductedCoin;
+      setTotalCoin(newTotalCoin); // อัปเดตจำนวนเหรียญทั้งหมดใหม่
     }
-  }, [totalCoin, deductedCoin]);
-  
-
-  // useEffect(() => {
-  //   if (empCoin !== null && deductedCoin > 0) {
-  //     const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
-  //     setTotalCoin(newTotalCoin);
-  //   }
-  // }, [deductedCoin, empCoin]);
+  }, [deductedCoin, empCoin]);
   
   
   const handleClick = () => {
     setIsFrame100(!isFrame100);
     if (!helpBought) {
       setHelpBought(true); // Update that help is bought
-      setIsGamePlaying(true); // เมื่อเริ่มเล่นเกม
-      setIsGamePlaying(false); // เมื่อกลับจากเล่นเกม
-      // Ensure empCoin and deductedCoin are numbers and not null
+      // Ensure empCoin and deductedCoin are numbers
       if (typeof empCoin === 'number' && typeof deductedCoin === 'number') {
         // Ensure deductedCoin is not greater than empCoin
         const newTotalCoin = Math.max(empCoin - deductedCoin, 0);
         setTotalCoin(newTotalCoin);
       }
     }
-  };
-  
+   };
   const handleBack = () => {
     setIsGamePlaying((prevIsGamePlaying) => !prevIsGamePlaying);
     navigate('/Homegame'); 
@@ -185,13 +175,17 @@ function Navbar() {
           </>
         )}
       <div></div> 
-      <C>
-        <Coins src={Frame82} />
-        <Coin>{isGamePlaying ? totalCoin : empCoin}</Coin>
+     <C>
+        <Coins src={Frame82}/>
+        <Coin>{empCoin}</Coin>
+
 
         <NavbarSetting>
           <Setting src={Frame102} onClick={() => setShowDropdown(!showDropdown)} />
-          {showDropdown && <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />}
+          {showDropdown && (
+            <SettingS src={isFrame100 ? Frame100 : Frame101} onClick={handleClick} />
+          )}
+         {isFrame100 && <audio ref={audioRef} src={BGmusic} autoPlay loop />}
         </NavbarSetting>
       </C>
 
