@@ -1,10 +1,10 @@
 {
   "User": [
     {
-      "Coin": 472,
-      "Level": 1,
+      "Coin": 458,
+      "Level": 4,
       "Username": "BabyC",
-      "DeductedCoin": 5,
+      "DeductedCoin": null,
       "id": "1"
     },
     {
