@@ -197,50 +197,15 @@ useEffect(() => {
       console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
     });
 }, []);
+const handleConfirm = () => {
+  setShowPopup(false);
+  if (selectedCoin !== null && selectedCoin !== undefined) {
+    if (totalCoin >= selectedCoin) {
+      const newCoinValue = totalCoin - selectedCoin;
+      setTotalCoin(newCoinValue);
+      setDeductedCoin(selectedCoin);
+      onBuyHelp();
 
-
-// ส่วนที่เพิ่มใน handleConfirm สำหรับลดจำนวนเหรียญเมื่อซื้อช่วย
-  const handleConfirm = () => {
-    setShowPopup(false);
-    if (selectedCoin !== null && selectedCoin !== undefined) {
-      // ตรวจสอบว่าผู้ใช้มีเหรียญเพียงพอสำหรับการซื้อช่วยหรือไม่
-      if (totalCoin >= selectedCoin) {
-        const newCoinValue = totalCoin - selectedCoin;
-        setTotalCoin(newCoinValue);
-        setDeductedCoin(selectedCoin);
-        onBuyHelp();
-  
-        const userId = '1';
-        fetch(`http://localhost:8000/User/${userId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            Coin: newCoinValue,
-            Level: selectedLevel,
-            Username: empUsername,
-            DeductedCoin: selectedCoin,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('เหรียญคงเหลือเป็น:', newCoinValue);
-            // ที่นี่คุณสามารถดำเนินการเพิ่มเติมหลังจากการซื้อเสร็จสิ้นได้
-            setHelpBought(true); // ตั้งค่าเป็น true เมื่อช่วยถูกซื้อ
-          })
-          .catch((error) => {
-            console.error('เกิดข้อผิดพลาดในการอัพเดตค่าเหรียญ:', error);
-          });
-      } else {
-        // แสดงข้อความแจ้งเตือนถึงจำนวนเหรียญไม่เพียงพอ
-        console.log('จำนวนเหรียญไม่เพียงพอ');
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (deductedCoin > 0) {
       const userId = '1';
       fetch(`http://localhost:8000/User/${userId}`, {
         method: 'PUT',
@@ -248,22 +213,26 @@ useEffect(() => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          DeductedCoin: deductedCoin,
+          Coin: newCoinValue,
+          Level: selectedLevel,
+          Username: empUsername,
+          DeductedCoin: selectedCoin,
         }),
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('ค่าเหรียญถูกอัพเดตเป็น:', data);
-          // ที่นี่คุณสามารถดำเนินการเพิ่มเติมหลังจากการอัพเดทค่าเวลาหักเหรียญได้
+          console.log('เหรียญคงเหลือเป็น:', newCoinValue);
+          setHelpBought(true);
         })
         .catch((error) => {
           console.error('เกิดข้อผิดพลาดในการอัพเดตค่าเหรียญ:', error);
         });
-        if (helpBought) {
-          setTotalCoin(Number(empCoin) - Number(deductedCoin));
-        }
+    } else {
+      console.log('จำนวนเหรียญไม่เพียงพอ');
     }
-  }, [empCoin, deductedCoin]);
+  }
+};
+
   
 
   const handleCancel = () => {

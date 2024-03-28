@@ -122,14 +122,14 @@ const RefreshWrapper = styled.span`
 function ModalWin({ onClose }: PopupProps) {
   const selectedTheme = 'selectedThemes';
   const [currentTheme, setCurrentTheme] = useState(lightTheme);
-  const [deductedCoin, setDeductedCoin] = useState<number>(0);
+  const [empCoin, setEmpCoin] = useState<number>(0);
   const navigate = useNavigate();
   useEffect(() => {
     const userId = '1';
     fetch(`http://localhost:8000/User/${userId}`)
       .then(response => response.json())
       .then(data => {
-        setDeductedCoin(data.DeductedCoin * 2); // Multiply the deducted coin by 2
+        setEmpCoin(data.Coin); // Multiply the deducted coin by 2
       })
       .catch(error => {
         console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
@@ -157,7 +157,7 @@ function ModalWin({ onClose }: PopupProps) {
             <ImgPopupCard src={BearWin} />
             <C>
               <Coins src={Coin} />
-              <Coinn>{deductedCoin}</Coinn>
+              <Coinn>{empCoin}</Coinn>
             </C>
             <ButtonWrapper>
               <IconButton onClick={handleBackStage}>

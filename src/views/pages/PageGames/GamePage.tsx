@@ -271,6 +271,9 @@ useEffect(() => {
 
   const openAllCards = () => {
     setOpenedCards(cardImages.map((card) => card.id));
+    setTimeout(() => {
+      closeAllCards();
+    }, 1000); // 10 seconds
   };
 
 
